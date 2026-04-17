@@ -43,7 +43,7 @@ async function sendWithResend(apiKey, { to, subject, html }) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      from: 'Marita Galafate · Psicóloga <noreply@tudominio.com>', // ← cambia por tu dominio verificado
+      from: 'Marita Galafate · Psicóloga <onboarding@resend.dev>', // ← cambia por tu dominio verificado
       to,
       subject,
       html
