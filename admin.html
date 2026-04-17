@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Admin · Marita Galafate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --green-900:#04342C;--green-800:#085041;--green-700:#0F6E56;
+      --green-600:#1D9E75;--green-100:#E1F5EE;--green-50:#F0FBF7;
+      --text:#1a1a1a;--text2:#555;--text3:#888;
+      --bg:#f8f9f4;--card:#fff;--border:rgba(0,0,0,.09);
+      --r:8px;--r2:12px;
+    }
+    body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    a{color:inherit;text-decoration:none}
+    button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+    /* LOGIN */
+    #admin-login{
+      display:flex;align-items:center;justify-content:center;
+      min-height:100vh;padding:1rem;
+      background:linear-gradient(135deg,var(--green-900),var(--green-700));
+    }
+    .login-box{
+      background:#fff;border-radius:var(--r2);padding:2.5rem 2rem;
+      width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.2);
+    }
+    .login-box h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
+    .login-box p{font-size:13px;color:var(--text3);margin-bottom:1.5rem}
+    .form-group{margin-bottom:1rem}
+    .form-group label{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+    .form-group input{width:100%;padding:10px 12px;border:.5px solid rgba(0,0,0,.15);border-radius:var(--r);font-family:inherit;font-size:14px;outline:none;transition:border-color .15s}
+    .form-group input:focus{border-color:var(--green-600)}
+    #login-error{display:none;font-size:13px;color:#991b1b;background:#fee2e2;border-radius:var(--r);padding:8px 12px;margin-top:.5rem}
+    .btn-login{width:100%;padding:12px;background:var(--green-700);color:#fff;font-size:14px;font-weight:500;border-radius:var(--r);margin-top:.5rem;transition:background .15s}
+    .btn-login:hover{background:var(--green-800)}
+
+    /* PANEL */
+    #admin-panel{display:none;min-height:100vh}
+    .admin-header{
+      background:var(--green-900);color:#fff;
+      padding:0 1.5rem;height:60px;
+      display:flex;align-items:center;justify-content:space-between;
+      position:sticky;top:0;z-index:100;
+    }
+    .admin-header h1{font-size:16px;font-weight:500}
+    .admin-header .back{font-size:13px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:6px}
+    .admin-header .back:hover{color:#fff}
+    .btn-logout{font-size:13px;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:100px;border:.5px solid rgba(255,255,255,.2);transition:all .15s}
+    .btn-logout:hover{background:rgba(255,255,255,.1);color:#fff}
+
+    .admin-tabs{
+      background:#fff;border-bottom:.5px solid var(--border);
+      display:flex;gap:0;overflow-x:auto;
+    }
+    .admin-tab-btn{
+      padding:14px 20px;font-size:14px;font-weight:400;color:var(--text2);
+      border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;
+    }
+    .admin-tab-btn.active{color:var(--green-700);border-bottom-color:var(--green-700);font-weight:500}
+    .admin-tab-btn:hover{color:var(--green-700)}
+
+    .admin-content{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+    .admin-tab-content{display:none}
+
+    /* Stats */
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+    .stat-card{background:var(--card);border-radius:var(--r2);padding:1.25rem 1.5rem;border:.5px solid var(--border)}
+    .stat-card .s-label{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+    .stat-card .s-num{font-size:32px;font-weight:500;color:var(--green-700)}
+
+    /* Schedule */
+    .sched-day{background:var(--card);border:.5px solid var(--border);border-radius:var(--r2);padding:1.25rem 1.5rem;margin-bottom:.75rem}
+    .sched-day-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+    .toggle-label{display:flex;align-items:center;gap:10px;cursor:pointer}
+    .toggle-label input[type=checkbox]{width:36px;height:20px;accent-color:var(--green-600);cursor:pointer}
+    .toggle-track{}
+    .day-name{font-size:14px;font-weight:500}
+    .day-closed{font-size:13px;color:var(--text3)}
+    .btn-add-slot{font-size:12px;color:var(--green-700);border:.5px solid var(--green-600);padding:4px 12px;border-radius:100px}
+    .btn-add-slot:hover{background:var(--green-100)}
+    .slot-inputs{display:flex;flex-wrap:wrap;gap:8px}
+    .slot-input-row{display:flex;align-items:center;gap:4px}
+    .slot-input-row input[type=time]{padding:6px 10px;border:.5px solid var(--border);border-radius:var(--r);font-size:13px;font-family:inherit}
+    .btn-del-slot{width:24px;height:24px;border-radius:50%;background:#fee2e2;color:#991b1b;font-size:11px;display:flex;align-items:center;justify-content:center}
+    .btn-del-slot:hover{background:#fecaca}
+    .no-slots-admin{font-size:13px;color:var(--text3)}
+    .btn-save-sched{background:var(--green-700);color:#fff;font-size:14px;font-weight:500;padding:12px 28px;border-radius:var(--r);margin-top:1.25rem;transition:background .15s}
+    .btn-save-sched:hover{background:var(--green-800)}
+
+    /* Calendar admin */
+    .admin-cal-cell{cursor:pointer;position:relative}
+    .admin-cal-cell:hover{background:var(--green-100)!important}
+    .admin-cal-cell.sp-closed{background:#fee2e2!important;color:#991b1b}
+    .admin-cal-cell.sp-special{background:#fef9c3!important;color:#78350f}
+    .sp-dot{position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;background:currentColor}
+
+    .upcoming-special{margin-top:1.5rem}
+    .upcoming-special h4{font-size:13px;font-weight:500;color:var(--text2);margin-bottom:.5rem}
+    .sp-item{display:flex;align-items:center;gap:.75rem;padding:8px 0;border-bottom:.5px solid var(--border);font-size:13px}
+    .sp-item em{color:var(--text3);font-size:12px;flex:1}
+    .sp-item button{font-size:12px;color:#991b1b}
+    .sp-badge{font-size:11px;padding:2px 8px;border-radius:100px;font-weight:500}
+    .sp-badge.closed{background:#fee2e2;color:#991b1b}
+    .sp-badge.custom{background:#fef9c3;color:#78350f}
+
+    /* Modal */
+    #special-day-modal{
+      display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);
+      align-items:center;justify-content:center;z-index:200;padding:1rem;
+    }
+    .modal-box{background:#fff;border-radius:var(--r2);padding:2rem;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
+    .modal-box h3{font-size:18px;font-weight:500;margin-bottom:.25rem}
+    .modal-date-display{font-size:14px;color:var(--green-700);font-weight:500;margin-bottom:1.25rem}
+    .modal-footer{display:flex;gap:.5rem;margin-top:1.25rem}
+    .btn-modal-save{flex:1;background:var(--green-700);color:#fff;font-size:14px;font-weight:500;padding:11px;border-radius:var(--r);transition:background .15s}
+    .btn-modal-save:hover{background:var(--green-800)}
+    .btn-modal-cancel{padding:11px 20px;font-size:14px;color:var(--text2);border:.5px solid var(--border);border-radius:var(--r)}
+    .btn-modal-cancel:hover{background:var(--bg)}
+    .form-group select{width:100%;padding:10px 12px;border:.5px solid rgba(0,0,0,.15);border-radius:var(--r);font-family:inherit;font-size:14px;outline:none}
+    .form-group textarea{width:100%;padding:10px 12px;border:.5px solid rgba(0,0,0,.15);border-radius:var(--r);font-family:inherit;font-size:13px;resize:vertical;min-height:80px}
+    .slots-hint{font-size:11px;color:var(--text3);margin-top:4px}
+
+    /* Bookings table */
+    .filter-tabs{display:flex;gap:.5rem;margin-bottom:1rem}
+    .filter-tab{font-size:13px;padding:6px 16px;border-radius:100px;border:.5px solid var(--border);color:var(--text2);transition:all .15s}
+    .filter-tab.active,.filter-tab:hover{background:var(--green-700);color:#fff;border-color:var(--green-700)}
+    .bookings-table{width:100%;border-collapse:collapse;font-size:13px}
+    .bookings-table th{text-align:left;padding:10px 12px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);border-bottom:.5px solid var(--border)}
+    .bookings-table td{padding:12px;border-bottom:.5px solid var(--border);vertical-align:middle}
+    .bookings-table tr:hover td{background:var(--green-50)}
+    .status-badge{font-size:11px;padding:3px 10px;border-radius:100px;font-weight:500}
+    .st-confirmed{background:#E1F5EE;color:#085041}
+    .st-cancelled{background:#fee2e2;color:#991b1b}
+    .booking-actions{display:flex;gap:6px}
+    .btn-sm{font-size:12px;padding:5px 12px;border-radius:100px;border:.5px solid var(--border);color:var(--text2);transition:all .15s}
+    .btn-sm:hover{background:var(--green-100);border-color:var(--green-600);color:var(--green-700)}
+    .btn-sm.danger{color:#991b1b;border-color:#fecaca}
+    .btn-sm.danger:hover{background:#fee2e2}
+    .no-bookings{font-size:14px;color:var(--text3);padding:2rem 0}
+
+    /* Cal shared */
+    .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+    .cal-month{font-size:15px;font-weight:500}
+    .cal-nav{width:30px;height:30px;border-radius:50%;border:.5px solid var(--border);font-size:15px;color:var(--text2);display:flex;align-items:center;justify-content:center}
+    .cal-nav:hover{background:var(--green-100);border-color:var(--green-600);color:var(--green-700)}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+    .cal-day-name{text-align:center;font-size:10px;font-weight:500;color:var(--text3);padding:3px 0 6px;text-transform:uppercase}
+    .cal-cell{aspect-ratio:1;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:12px;position:relative}
+    .cal-cell.empty{background:none}
+    .cal-cell.today{border:1.5px solid var(--green-600)}
+
+    /* Admin msg */
+    .admin-msg{display:none;padding:10px 14px;border-radius:var(--r);font-size:13px;margin-top:.75rem}
+    .admin-msg.success{background:var(--green-100);color:#085041;border:.5px solid #9FE1CB}
+    .admin-msg.error{background:#fee2e2;color:#991b1b;border:.5px solid #fecaca}
+
+    /* Responsive */
+    @media(max-width:768px){
+      .stats-grid{grid-template-columns:1fr 1fr}
+      .bookings-table{font-size:12px}
+      .admin-content{padding:1rem}
+    }
+    @media(max-width:480px){
+      .stats-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGIN ──────────────────────────────────────────────────────────────────── -->
+<div id="admin-login">
+  <div class="login-box">
+    <h1>Panel de administración</h1>
+    <p>Marita Galafate · Psicóloga</p>
+    <form id="admin-login-form" novalidate>
+      <div class="form-group">
+        <label for="admin-email">Email</label>
+        <input type="email" id="admin-email" value="maritagpsicologa@gmail.com" required />
+      </div>
+      <div class="form-group">
+        <label for="admin-password">Contraseña</label>
+        <input type="password" id="admin-password" required placeholder="Tu contraseña de Firebase" />
+      </div>
+      <div id="login-error"></div>
+      <button type="submit" class="btn-login">Entrar</button>
+    </form>
+    <p style="font-size:12px;color:#999;margin-top:1rem;text-align:center"><a href="index.html">← Volver a la web</a></p>
+  </div>
+</div>
+
+<!-- ── PANEL ──────────────────────────────────────────────────────────────────── -->
+<div id="admin-panel">
+  <header class="admin-header">
+    <div style="display:flex;align-items:center;gap:1rem">
+      <a href="index.html" class="back">← Web</a>
+      <h1>Panel Admin</h1>
+    </div>
+    <button class="btn-logout" onclick="adminLogout()">Cerrar sesión</button>
+  </header>
+
+  <nav class="admin-tabs">
+    <button class="admin-tab-btn" data-tab="dashboard">Dashboard</button>
+    <button class="admin-tab-btn" data-tab="bookings">Reservas</button>
+    <button class="admin-tab-btn" data-tab="schedule">Horarios</button>
+    <button class="admin-tab-btn" data-tab="calendar">Días especiales</button>
+  </nav>
+
+  <main class="admin-content">
+
+    <!-- ── DASHBOARD ── -->
+    <div id="tab-dashboard" class="admin-tab-content">
+      <h2 style="font-size:20px;font-weight:500;margin-bottom:1.5rem">Resumen</h2>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="s-label">Citas próximas</div><div class="s-num" id="stat-upcoming">—</div></div>
+        <div class="stat-card"><div class="s-label">Esta semana</div><div class="s-num" id="stat-week">—</div></div>
+        <div class="stat-card"><div class="s-label">Este mes</div><div class="s-num" id="stat-month">—</div></div>
+        <div class="stat-card"><div class="s-label">Total confirmadas</div><div class="s-num" id="stat-total">—</div></div>
+      </div>
+      <h3 style="font-size:16px;font-weight:500;margin-bottom:1rem">Próximas citas</h3>
+      <div id="bookings-list-dashboard"></div>
+    </div>
+
+    <!-- ── RESERVAS ── -->
+    <div id="tab-bookings" class="admin-tab-content">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem">
+        <h2 style="font-size:20px;font-weight:500">Gestión de reservas</h2>
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="setFilter(this,'upcoming')">Próximas</button>
+          <button class="filter-tab" onclick="setFilter(this,'past')">Pasadas</button>
+          <button class="filter-tab" onclick="setFilter(this,'all')">Todas</button>
+        </div>
+      </div>
+      <div id="admin-msg" class="admin-msg"></div>
+      <div id="bookings-msg" class="admin-msg"></div>
+      <div id="bookings-list" style="overflow-x:auto"></div>
+    </div>
+
+    <!-- ── HORARIOS ── -->
+    <div id="tab-schedule" class="admin-tab-content">
+      <h2 style="font-size:20px;font-weight:500;margin-bottom:.5rem">Horarios regulares</h2>
+      <p style="font-size:13px;color:var(--text3);margin-bottom:1.5rem">Define los días y horas disponibles para reservas. Los días especiales sobreescriben este horario.</p>
+      <div id="schedule-editor"></div>
+      <div id="schedule-msg" class="admin-msg"></div>
+      <button class="btn-save-sched" id="save-schedule-btn" onclick="saveSchedule()">✓ Guardar horario</button>
+    </div>
+
+    <!-- ── DÍAS ESPECIALES ── -->
+    <div id="tab-calendar" class="admin-tab-content">
+      <h2 style="font-size:20px;font-weight:500;margin-bottom:.5rem">Días especiales</h2>
+      <p style="font-size:13px;color:var(--text3);margin-bottom:1.5rem">Haz clic en cualquier día para marcarlo como cerrado o con horario personalizado (vacaciones, festivos, etc).</p>
+      <div id="special-msg" class="admin-msg"></div>
+      <div id="admin-calendar"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── MODAL DÍAS ESPECIALES ─────────────────────────────────────────────────── -->
+<div id="special-day-modal">
+  <div class="modal-box">
+    <h3>Editar día</h3>
+    <p class="modal-date-display" id="sd-date-display"></p>
+    <input type="hidden" id="sd-date" />
+    <div class="form-group">
+      <label>Estado del día</label>
+      <select id="sd-open" onchange="toggleSpecialDaySlots()">
+        <option value="open">Abierto (con horario personalizado)</option>
+        <option value="closed">Cerrado (festivo / vacaciones)</option>
+      </select>
+    </div>
+    <div class="form-group" id="sd-slots-wrap">
+      <label>Horarios disponibles (uno por línea, formato HH:MM)</label>
+      <textarea id="sd-slots" placeholder="09:00&#10;10:00&#10;11:00&#10;17:00&#10;18:00"></textarea>
+      <p class="slots-hint">Deja vacío para usar el horario regular</p>
+    </div>
+    <div class="form-group">
+      <label>Etiqueta (opcional)</label>
+      <input type="text" id="sd-label" placeholder="Ej: Festivo, Vacaciones..." />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-save" onclick="saveSpecialDay()">Guardar</button>
+      <button class="btn-modal-cancel" onclick="closeSpecialDayModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="js/admin.js"></script>
+<script>
+  function setFilter(btn, filter) {
+    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderUpcomingBookings(filter);
+  }
+  initAdmin();
+</script>
+</body>
+</html>

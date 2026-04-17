@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marita Galafate · Psicóloga General Sanitaria</title>
+  <meta name="description" content="Psicología online y presencial en Jerez de la Frontera. Ansiedad, depresión, duelo, pareja y mucho más. +20 años de experiencia. Reserva tu cita online." />
+  <meta name="keywords" content="psicóloga jerez, psicología online, ansiedad, depresión, terapia, EMDR, psicóloga Marita Galafate" />
+  <meta property="og:title" content="Marita Galafate · Psicóloga General Sanitaria" />
+  <meta property="og:description" content="Terapia psicológica online y presencial. +20 años de experiencia. Reserva tu cita." />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="https://tudominio.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────────────────────────────────────────────── -->
+<nav id="main-nav" role="navigation" aria-label="Navegación principal">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#"><span>Marita</span> Galafate</a>
+
+    <ul class="nav-links">
+      <li><a href="#sobre-mi" id="nav-about">Sobre mí</a></li>
+      <li><a href="#especialidades" id="nav-specialties">Especialidades</a></li>
+      <li><a href="#reservar" id="nav-booking">Reservar cita</a></li>
+      <li><a href="#opiniones" id="nav-reviews">Opiniones</a></li>
+      <li><a href="#contacto" id="nav-contact">Contacto</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <div class="lang-switcher">
+        <button class="lang-btn active" data-lang="es" onclick="switchLang('es')">ES</button>
+        <button class="lang-btn"        data-lang="en" onclick="switchLang('en')">EN</button>
+      </div>
+      <a href="#reservar" class="nav-book-btn">Reservar cita</a>
+      <button id="mobile-menu-btn" aria-label="Abrir menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div id="mobile-menu" role="menu">
+  <a href="#sobre-mi">Sobre mí</a>
+  <a href="#especialidades">Especialidades</a>
+  <a href="#reservar">Reservar cita</a>
+  <a href="#opiniones">Opiniones</a>
+  <a href="#contacto">Contacto</a>
+  <div style="display:flex;gap:8px;padding-top:.5rem">
+    <button class="lang-btn active" data-lang="es" onclick="switchLang('es');document.getElementById('mobile-menu').style.display='none'">ES</button>
+    <button class="lang-btn"        data-lang="en" onclick="switchLang('en');document.getElementById('mobile-menu').style.display='none'">EN</button>
+  </div>
+  <a href="#reservar" class="nav-book-btn">Reservar cita</a>
+</div>
+
+<!-- ── HERO ─────────────────────────────────────────────────────────────────── -->
+<section id="hero" aria-label="Presentación">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-badge" id="hero-badge">Psicóloga General Sanitaria · +20 años de experiencia</div>
+      <h1 class="hero-title">
+        <span id="hero-title1">Tu bienestar</span><br>
+        <em id="hero-title2">es posible</em>
+      </h1>
+      <p class="hero-subtitle" id="hero-subtitle">Terapia psicológica online y presencial adaptada a ti. Con cercanía, rigor y herramientas reales desde el primer día.</p>
+      <div class="hero-ctas">
+        <a href="#reservar" class="btn-primary" id="hero-cta1" onclick="scrollToBooking('online')">
+          Reservar cita online
+          <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#especialidades" class="btn-ghost" id="hero-cta2">Ver especialidades</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="num" id="hero-stat1-num">20+</div>
+          <div class="lbl" id="hero-stat1-lbl">Años de experiencia</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num" id="hero-stat2-num">140</div>
+          <div class="lbl" id="hero-stat2-lbl">Pacientes satisfechos</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num" id="hero-stat3-num">55€</div>
+          <div class="lbl" id="hero-stat3-lbl">Desde / sesión</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-image-wrap">
+      <div class="hero-photo-frame">
+        <!-- Sustituye src por la foto real de Marita -->
+        <!-- <img src="assets/marita-foto.jpg" alt="Marita Galafate, Psicóloga" /> -->
+        <div class="hero-photo-placeholder">
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="40" cy="30" r="16" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/>
+            <path d="M10 72c0-16.569 13.431-30 30-30s30 13.431 30 30" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/>
+          </svg>
+          <p style="font-size:12px;color:rgba(255,255,255,.4)">Añade tu foto aquí</p>
+        </div>
+        <div class="hero-trust-badge">
+          <div>
+            <div class="stars">★★★★★</div>
+          </div>
+          <div class="trust-text">
+            <p>140 reseñas</p>
+            <span>Pacientes verificados</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SOBRE MÍ ───────────────────────────────────────────────────────────────── -->
+<section id="sobre-mi" class="section" aria-label="Sobre Marita">
+  <div class="container">
+    <div class="about-grid">
+      <div class="animate-in">
+        <p class="section-label" id="about-label">Sobre mí</p>
+        <h2 class="section-title" id="about-title">Soy Marita, acompaño a personas en sus momentos más difíciles</h2>
+        <p class="section-subtitle" id="about-p1" style="margin-bottom:1rem">Llevo ejerciendo la psicología desde 2004. A lo largo de estos años he desarrollado una forma de trabajar que combina experiencia clínica, formación especializada y un enfoque cercano, humano y adaptado a cada persona.</p>
+        <p class="section-subtitle" id="about-p2" style="margin-bottom:1.5rem">La terapia no es solo hablar: es comprender lo que te ocurre y trabajar contigo para cambiarlo. Cada proceso es único, por eso adapto la intervención a lo que realmente necesitas, sin fórmulas generales.</p>
+        <div class="about-certs">
+          <h4 id="about-cert-title">Formación y especialización</h4>
+          <ul class="cert-list">
+            <li id="about-cert1">Neuropsicología Forense</li>
+            <li id="about-cert2">Trauma y EMDR</li>
+            <li id="about-cert3">Psicología en Catástrofes y Emergencias</li>
+            <li id="about-cert4">Mediación y Resolución de Conflictos</li>
+            <li id="about-cert5">Psicogerontología</li>
+            <li id="about-cert6">Coaching Motivacional y Mentoring Personal</li>
+          </ul>
+        </div>
+      </div>
+      <div class="about-image animate-in">
+        <!-- Sustituye por tu foto real -->
+        <div class="about-photo-placeholder">
+          <svg viewBox="0 0 60 60" fill="none"><circle cx="30" cy="22" r="12" stroke="#1D9E75" stroke-width="1.5"/><path d="M6 54c0-13.255 10.745-24 24-24s24 10.745 24 24" stroke="#1D9E75" stroke-width="1.5"/></svg>
+          <p>Foto de Marita</p>
+        </div>
+        <div class="about-exp-badge">
+          <div class="exp-num">20+</div>
+          <div class="exp-lbl">años de experiencia</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MODALIDADES ───────────────────────────────────────────────────────────── -->
+<section id="modalidades" class="section section-alt" aria-label="Modalidades de terapia">
+  <div class="container">
+    <div class="animate-in">
+      <p class="section-label" id="mod-label">Modalidades</p>
+      <h2 class="section-title" id="mod-title">Elige cómo quieres trabajar</h2>
+    </div>
+    <div class="modalities-grid">
+      <!-- Online -->
+      <div class="mod-card featured animate-in">
+        <span class="mod-badge" id="mod-online-badge">Recomendada</span>
+        <div class="mod-icon">🌐</div>
+        <h3 id="mod-online-title">Terapia Online</h3>
+        <p id="mod-online-desc">Recibe acompañamiento profesional desde cualquier lugar. Sin barreras geográficas, con total comodidad y la misma eficacia que la sesión presencial.</p>
+        <ul class="mod-features">
+          <li id="mod-online-f1">Zoom o Skype</li>
+          <li id="mod-online-f2">Horario flexible</li>
+          <li id="mod-online-f3">Desde cualquier país</li>
+          <li id="mod-online-f4">Acceso inmediato</li>
+        </ul>
+        <button class="btn-mod" id="mod-online-cta" onclick="scrollToBooking('online')">Reservar sesión online</button>
+      </div>
+      <!-- Presencial -->
+      <div class="mod-card animate-in">
+        <div class="mod-icon">📍</div>
+        <h3 id="mod-presencial-title">Terapia Presencial</h3>
+        <p id="mod-presencial-desc">Sesiones en nuestro centro en Jerez de la Frontera. Un espacio cálido, confidencial y preparado para que te sientas cómodo/a desde el primer momento.</p>
+        <ul class="mod-features">
+          <li id="mod-presencial-f1">Centro en Jerez</li>
+          <li id="mod-presencial-f2">Av. Alcalde Álvaro Domecq 18</li>
+          <li id="mod-presencial-f3">Ambiente cálido y privado</li>
+          <li id="mod-presencial-f4">Fácil aparcamiento</li>
+        </ul>
+        <button class="btn-mod outline" id="mod-presencial-cta" onclick="scrollToBooking('presencial')">Reservar sesión presencial</button>
+      </div>
+    </div>
+    <p class="mod-price-note" id="mod-price">Desde 55€/sesión · 1 hora</p>
+  </div>
+</section>
+
+<!-- ── ESPECIALIDADES ────────────────────────────────────────────────────────── -->
+<section id="especialidades" class="section" aria-label="Especialidades">
+  <div class="container">
+    <div class="animate-in">
+      <p class="section-label" id="spec-label">Especialidades</p>
+      <h2 class="section-title" id="spec-title">Áreas de intervención</h2>
+    </div>
+    <div class="spec-grid">
+      <div class="spec-card animate-in"><div class="spec-icon">◎</div><h4 id="spec-title-0">Ansiedad y estrés</h4><p id="spec-desc-0">Ataques de pánico, preocupación excesiva, estrés laboral y fobias.</p></div>
+      <div class="spec-card animate-in"><div class="spec-icon">◉</div><h4 id="spec-title-1">Depresión</h4><p id="spec-desc-1">Tristeza persistente, pérdida de motivación y bajo estado de ánimo.</p></div>
+      <div class="spec-card animate-in"><div class="spec-icon">◈</div><h4 id="spec-title-2">Autoestima e inseguridad</h4><p id="spec-desc-2">Trabajo profundo de identidad, confianza y autoimagen.</p></div>
+      <div class="spec-card animate-in"><div class="spec-icon">◍</div><h4 id="spec-title-3">Duelo y pérdidas</h4><p id="spec-desc-3">Acompañamiento en procesos de pérdida, cambio y adaptación.</p></div>
+      <div class="spec-card animate-in"><div class="spec-icon">◌</div><h4 id="spec-title-4">Pareja y familia</h4><p id="spec-desc-4">Conflictos de pareja, dependencia emocional y terapia familiar.</p></div>
+      <div class="spec-card animate-in"><div class="spec-icon">◐</div><h4 id="spec-title-5">Trastornos del sueño</h4><p id="spec-desc-5">Insomnio, sueño no reparador y dificultades de descanso.</p></div>
+      <div class="spec-card animate-in"><div class="spec-icon">◑</div><h4 id="spec-title-6">Niños y adolescentes</h4><p id="spec-desc-6">Miedos, acoso escolar, problemas de conducta y aprendizaje.</p></div>
+      <div class="spec-card animate-in"><div class="spec-icon">◒</div><h4 id="spec-title-7">Burnout y mobbing</h4><p id="spec-desc-7">Agotamiento laboral, acoso en el trabajo y crisis vitales.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── RESERVAS ──────────────────────────────────────────────────────────────── -->
+<section id="reservar" class="section section-alt" aria-label="Reservar cita">
+  <div class="container">
+    <div class="animate-in">
+      <p class="section-label" id="booking-label">Reserva tu cita</p>
+      <h2 class="section-title" id="booking-title">¿Cuándo empezamos?</h2>
+      <p class="section-subtitle" id="booking-subtitle">Elige modalidad, fecha y hora. Recibirás confirmación por email al instante.</p>
+    </div>
+
+    <div id="reschedule-notice"></div>
+
+    <div class="booking-layout animate-in">
+      <!-- Columna izquierda: modalidad + calendario -->
+      <div>
+        <div class="modality-selector">
+          <p id="booking-modality-lbl">Modalidad</p>
+          <div class="modality-btns">
+            <button class="modality-btn" data-modality="online"     id="b-online-btn">Online</button>
+            <button class="modality-btn" data-modality="presencial" id="b-presencial-btn">Presencial</button>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:.75rem" id="booking-select-date">Selecciona una fecha disponible</p>
+        <div id="booking-calendar"></div>
+      </div>
+
+      <!-- Columna derecha: slots + formulario -->
+      <div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:.75rem" id="booking-select-time">Selecciona un horario</p>
+        <div id="selected-date-display"></div>
+        <div id="time-slots"></div>
+
+        <div id="booking-success">
+          <h3 id="booking-success-title">¡Cita confirmada!</h3>
+          <p id="booking-success-msg">Te hemos enviado un email de confirmación. Nos vemos pronto.</p>
+        </div>
+
+        <div id="booking-form-container">
+          <h4 id="booking-form-title">Tus datos</h4>
+          <form id="booking-form" novalidate>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem">
+              <div class="form-group" style="margin-bottom:0">
+                <label for="b-name" id="b-name-label">Nombre</label>
+                <input type="text" id="b-name" required autocomplete="given-name" />
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label for="b-lastname" id="b-lastname-label">Apellidos</label>
+                <input type="text" id="b-lastname" required autocomplete="family-name" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="b-email" id="b-email-label">Email</label>
+              <input type="email" id="b-email" required autocomplete="email" />
+            </div>
+            <div class="form-group">
+              <label for="b-phone" id="b-phone-label">Teléfono</label>
+              <input type="tel" id="b-phone" required autocomplete="tel" />
+            </div>
+            <div class="form-group">
+              <label for="b-reason" id="b-reason-label">Motivo de consulta <span style="font-weight:300;color:var(--text-muted)">(opcional)</span></label>
+              <textarea id="b-reason"></textarea>
+            </div>
+            <div id="booking-msg" class="form-msg"></div>
+            <button type="submit" class="btn-submit" id="booking-submit-btn">Confirmar reserva</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── OPINIONES ────────────────────────────────────────────────────────────── -->
+<section id="opiniones" class="section" aria-label="Opiniones de pacientes">
+  <div class="container">
+    <div class="animate-in" style="text-align:center;max-width:600px;margin:0 auto 0">
+      <p class="section-label" id="reviews-label">Opiniones</p>
+      <h2 class="section-title" id="reviews-title">Lo que dicen los pacientes</h2>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card animate-in">
+        <div class="review-header">
+          <div class="reviewer-info">
+            <div class="reviewer-avatar">LO</div>
+            <div><div class="reviewer-name" id="rev-name-0">Lole</div><div class="reviewer-date" id="rev-date-0">11 Abril 2026</div></div>
+          </div>
+          <div class="stars">★★★★★</div>
+        </div>
+        <p class="review-text" id="rev-text-0">"Nos ha ayudado mucho a nivel familiar, con orientaciones claras y útiles. Su apoyo con mi hijo ha sido clave para mejorar los problemas de conducta. Muy cercana, implicada y profesional."</p>
+        <span class="verified-badge" id="rev-verified-0">Paciente verificado</span>
+      </div>
+      <div class="review-card animate-in">
+        <div class="review-header">
+          <div class="reviewer-info">
+            <div class="reviewer-avatar">MA</div>
+            <div><div class="reviewer-name" id="rev-name-1">Marta</div><div class="reviewer-date" id="rev-date-1">9 Abril 2026</div></div>
+          </div>
+          <div class="stars">★★★★★</div>
+        </div>
+        <p class="review-text" id="rev-text-1">"Me ha ayudado mucho a gestionar la ansiedad derivada de una situación laboral bastante compleja. He ido ganando calma y claridad. Muy profesional y cercana."</p>
+        <span class="verified-badge" id="rev-verified-1">Paciente verificado</span>
+      </div>
+      <div class="review-card animate-in">
+        <div class="review-header">
+          <div class="reviewer-info">
+            <div class="reviewer-avatar">FA</div>
+            <div><div class="reviewer-name" id="rev-name-2">Fabio</div><div class="reviewer-date" id="rev-date-2">4 Abril 2026</div></div>
+          </div>
+          <div class="stars">★★★★★</div>
+        </div>
+        <p class="review-text" id="rev-text-2">"Terapia efectiva, cómoda y práctica. Se adaptó en todo momento a mis necesidades. Desde mi experiencia 100% recomendable."</p>
+        <span class="verified-badge" id="rev-verified-2">Paciente verificado</span>
+      </div>
+      <div class="review-card animate-in">
+        <div class="review-header">
+          <div class="reviewer-info">
+            <div class="reviewer-avatar">SA</div>
+            <div><div class="reviewer-name" id="rev-name-3">Samia</div><div class="reviewer-date" id="rev-date-3">15 Abril 2026</div></div>
+          </div>
+          <div class="stars">★★★★★</div>
+        </div>
+        <p class="review-text" id="rev-text-3">"Muy contenta con la atención. Muy profesional y cercana desde el primer momento."</p>
+        <span class="verified-badge" id="rev-verified-3">Paciente verificado</span>
+      </div>
+      <div class="review-card animate-in">
+        <div class="review-header">
+          <div class="reviewer-info">
+            <div class="reviewer-avatar">FR</div>
+            <div><div class="reviewer-name" id="rev-name-4">Francisca</div><div class="reviewer-date" id="rev-date-4">6 Abril 2026</div></div>
+          </div>
+          <div class="stars">★★★★★</div>
+        </div>
+        <p class="review-text" id="rev-text-4">"Un trato excepcional y una profesional como pocas. Me ha cambiado la vida. Totalmente recomendable."</p>
+        <span class="verified-badge" id="rev-verified-4">Paciente verificado</span>
+      </div>
+    </div>
+    <div class="reviews-footer animate-in">
+      <p>140 recomendaciones · Opiniones verificadas por MundoPsicólogos</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACTO ──────────────────────────────────────────────────────────────── -->
+<section id="contacto" class="section section-alt" aria-label="Contacto">
+  <div class="container">
+    <div class="animate-in">
+      <p class="section-label" id="contact-label">Contacto</p>
+      <h2 class="section-title" id="contact-title">¿Tienes alguna pregunta?</h2>
+      <p class="section-subtitle" id="contact-subtitle">Puedes escribirme o llamarme. Te respondo en menos de 24 horas.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info animate-in">
+        <div class="contact-item">
+          <div class="contact-item-icon">📞</div>
+          <div class="contact-item-text">
+            <h4>Teléfono</h4>
+            <p><a href="tel:+34697911679">+34 697 911 679</a></p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">✉️</div>
+          <div class="contact-item-text">
+            <h4>Email</h4>
+            <p><a href="mailto:maritagpsicologa@gmail.com">maritagpsicologa@gmail.com</a></p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">📍</div>
+          <div class="contact-item-text">
+            <h4>Dirección</h4>
+            <p>Av. Alcalde Álvaro Domecq 18, 2ºA<br>11405 Jerez de la Frontera, Cádiz</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">🕐</div>
+          <div class="contact-item-text">
+            <h4 id="contact-schedule-title">Horario de atención</h4>
+            <p id="contact-schedule">Lunes a viernes: 9:00 – 14:00 y 17:00 – 20:00</p>
+          </div>
+        </div>
+        <button class="btn-whatsapp" id="whatsapp-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          <span id="whatsapp-btn">Escribir por WhatsApp</span>
+        </button>
+      </div>
+
+      <div class="animate-in">
+        <form id="contact-form" novalidate>
+          <div class="form-group">
+            <label for="c-name" id="c-name-label">Nombre</label>
+            <input type="text" id="c-name" required autocomplete="name" />
+          </div>
+          <div class="form-group">
+            <label for="c-email" id="c-email-label">Email</label>
+            <input type="email" id="c-email" required autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label for="c-message" id="c-message-label">Mensaje</label>
+            <textarea id="c-message" rows="5" required></textarea>
+          </div>
+          <div id="contact-msg" class="form-msg"></div>
+          <button type="submit" class="btn-submit" id="contact-submit-btn">Enviar mensaje</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ────────────────────────────────────────────────────────────────── -->
+<footer id="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <h3>Marita Galafate Domínguez</h3>
+        <p>Psicóloga General Sanitaria · Jerez de la Frontera</p>
+      </div>
+      <div class="footer-links">
+        <a href="#" id="footer-privacy">Política de privacidad</a>
+        <a href="#" id="footer-legal">Aviso legal</a>
+        <a href="#" id="footer-cookies">Cookies</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Marita Galafate Domínguez. <span id="footer-rights">Todos los derechos reservados.</span></p>
+      <p>Diseño web personalizado</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ── FLOATING WHATSAPP ─────────────────────────────────────────────────────── -->
+<button id="whatsapp-fab" aria-label="Contactar por WhatsApp">
+  <svg viewBox="0 0 24 24" fill="white" style="width:26px;height:26px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</button>
+
+<!-- ── SCRIPTS ────────────────────────────────────────────────────────────────── -->
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+<!-- App -->
+<script src="firebase-config.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/booking.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "functions": {
+    "api/send-email.js": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*)",     "dest": "/$1" }
+  ],
+  "env": {
+    "RESEND_API_KEY": "@resend_api_key"
+  }
+}
