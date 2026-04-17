@@ -43,7 +43,7 @@ async function sendWithResend(apiKey, { to, subject, html }) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      from: 'Marita Galafate · Psicóloga <onboarding@resend.dev>', // ← cambia por tu dominio verificado
+      from: 'Marita Galafate · Psicóloga <noreply@tudominio.com>', // ← cambia por tu dominio verificado
       to,
       subject,
       html
@@ -82,38 +82,44 @@ function buildEmails(type, d) {
 
 // ─── Estilos base compartidos ─────────────────────────────────────────────────
 const BASE_STYLE = `
-  body{margin:0;padding:0;background:#f4f4f0;font-family:'Helvetica Neue',Arial,sans-serif;color:#1a1a1a}
-  .wrap{max-width:580px;margin:32px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.08)}
-  .header{background:#0F6E56;padding:32px 40px}
-  .header h1{margin:0;color:#fff;font-size:22px;font-weight:500;letter-spacing:-.3px}
-  .header p{margin:6px 0 0;color:rgba(255,255,255,.7);font-size:14px}
-  .body{padding:32px 40px}
-  .body p{margin:0 0 16px;font-size:15px;line-height:1.65;color:#333}
-  .info-box{background:#f8f9f4;border-left:3px solid #1D9E75;border-radius:0 8px 8px 0;padding:16px 20px;margin:20px 0}
-  .info-box .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:14px}
+  *{box-sizing:border-box}
+  body{margin:0;padding:0;background:#f4f4f0;font-family:'Helvetica Neue',Arial,sans-serif;color:#1a1a1a;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:560px;margin:32px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+  .header{background:linear-gradient(135deg,#04342C 0%,#0F6E56 100%);padding:36px 40px}
+  .header-icon{font-size:28px;margin-bottom:10px;display:block}
+  .header h1{margin:0;color:#fff;font-size:21px;font-weight:500;letter-spacing:-.3px;line-height:1.2}
+  .header p{margin:6px 0 0;color:rgba(255,255,255,.6);font-size:13px}
+  .body{padding:36px 40px}
+  .body p{margin:0 0 16px;font-size:15px;line-height:1.7;color:#444}
+  .body strong{font-weight:600;color:#1a1a1a}
+  .info-box{background:#f8faf8;border:.5px solid #d1ead9;border-radius:10px;padding:4px 0;margin:20px 0}
+  .info-box .row{display:flex;justify-content:space-between;align-items:center;padding:10px 18px;border-bottom:.5px solid #eef2ee;font-size:14px}
   .info-box .row:last-child{border-bottom:none}
-  .info-box .lbl{color:#888;font-weight:400}
+  .info-box .lbl{color:#888;font-weight:400;margin-right:16px;flex-shrink:0}
   .info-box .val{color:#1a1a1a;font-weight:500;text-align:right}
-  .btn{display:inline-block;margin:8px 8px 8px 0;padding:12px 24px;background:#0F6E56;color:#fff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:500}
+  .btn{display:inline-block;margin:6px 8px 6px 0;padding:11px 22px;background:#0F6E56;color:#fff;text-decoration:none;border-radius:100px;font-size:13px;font-weight:500}
   .btn.outline{background:#fff;color:#0F6E56;border:1.5px solid #0F6E56}
-  .footer{background:#f4f4f0;padding:20px 40px;text-align:center}
-  .footer p{margin:0;font-size:12px;color:#999;line-height:1.6}
+  .footer{background:#f8faf8;border-top:.5px solid #eee;padding:22px 40px;text-align:center}
+  .footer p{margin:0;font-size:12px;color:#aaa;line-height:1.7}
   .footer a{color:#0F6E56;text-decoration:none}
-  .badge{display:inline-block;background:#E1F5EE;color:#0F6E56;font-size:12px;font-weight:500;padding:4px 12px;border-radius:100px;margin-bottom:16px}
+  .badge{display:inline-flex;align-items:center;gap:6px;background:#E1F5EE;color:#085041;font-size:12px;font-weight:500;padding:5px 14px;border-radius:100px;margin-bottom:18px;border:.5px solid #9FE1CB}
+  .alert-new{background:#fef9c3;border:.5px solid #fde68a;border-radius:10px;padding:12px 18px;margin-bottom:18px;font-size:13px;color:#78350f;line-height:1.5}
+  .alert-return{background:#E1F5EE;border:.5px solid #9FE1CB;border-radius:10px;padding:12px 18px;margin-bottom:18px;font-size:13px;color:#085041;line-height:1.5}
 `;
 
 const FOOTER_HTML = `
   <div class="footer">
-    <p>Marita Galafate Domínguez · Psicóloga General Sanitaria<br>
-    Av. Alcalde Álvaro Domecq 18, 2ºA · Jerez de la Frontera<br>
-    <a href="tel:+34697911679">+34 697 911 679</a> · <a href="mailto:maritagpsicologa@gmail.com">maritagpsicologa@gmail.com</a></p>
+    <p><strong style="color:#666;font-size:13px">Marita Galafate Domínguez</strong><br>
+    Psicóloga General Sanitaria · Jerez de la Frontera<br>
+    Av. Alcalde Álvaro Domecq 18, 2ºA<br>
+    <a href="tel:+34697911679">+34 697 911 679</a> &nbsp;·&nbsp; <a href="mailto:maritagpsicologa@gmail.com">maritagpsicologa@gmail.com</a></p>
   </div>
 `;
 
-function wrap(headerTitle, headerSub, bodyContent) {
-  return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${BASE_STYLE}</style></head><body>
+function wrap(headerTitle, headerSub, bodyContent, icon = '') {
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${BASE_STYLE}</style></head><body>
   <div class="wrap">
-    <div class="header"><h1>${headerTitle}</h1>${headerSub ? `<p>${headerSub}</p>` : ''}</div>
+    <div class="header">${icon ? `<span class="header-icon">${icon}</span>` : ''}<h1>${headerTitle}</h1>${headerSub ? `<p>${headerSub}</p>` : ''}</div>
     <div class="body">${bodyContent}</div>
     ${FOOTER_HTML}
   </div></body></html>`;
@@ -129,7 +135,7 @@ function emailClientConfirm(d) {
   const subject = isEs ? `Cita confirmada · ${d.date} a las ${d.time}` : `Session confirmed · ${d.date} at ${d.time}`;
   const html = wrap(
     isEs ? '¡Tu cita está confirmada!' : 'Your session is confirmed!',
-    isEs ? 'Marita Galafate · Psicóloga' : 'Marita Galafate · Psychologist',
+    isEs ? 'Marita Galafate · Psicóloga General Sanitaria' : 'Marita Galafate · Clinical Psychologist',
     `
     <span class="badge">${isEs ? '✓ Confirmada' : '✓ Confirmed'}</span>
     <p>${isEs ? `Hola <strong>${d.clientName}</strong>, tu cita ha quedado registrada correctamente.` : `Hello <strong>${d.clientName}</strong>, your session has been successfully registered.`}</p>
@@ -146,15 +152,15 @@ function emailClientConfirm(d) {
     <p style="font-size:13px;color:#999;margin-top:24px">${isEs ? 'Si tienes preguntas, escríbeme a maritagpsicologa@gmail.com o llama al +34 697 911 679.' : 'For any questions, email maritagpsicologa@gmail.com or call +34 697 911 679.'}</p>
     `
   );
-  return { to: "maritagpsicologa@gmail.com", subject, html };
+  return { to: d.clientEmail, subject, html };
 }
 
 function emailAdminNewBooking(d) {
   const newPatientBadge = d.isNewPatient
-    ? `<div style="background:#fef9c3;border:.5px solid #fde68a;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:14px;color:#78350f">
+    ? `<div class="alert-new">
         <strong>⭐ Paciente nuevo</strong> — Primera reserva desde la web. No tiene historial previo en el sistema.
        </div>`
-    : `<div style="background:#E1F5EE;border:.5px solid #9FE1CB;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:14px;color:#085041">
+    : `<div class="alert-return">
         <strong>↩ Paciente recurrente</strong> — Ya ha reservado anteriormente a través de la web.
        </div>`;
 
@@ -191,7 +197,7 @@ function emailClientCancel(d) {
     <a class="btn" href="${d.bookingUrl}">${isEs ? 'Reservar nueva cita' : 'Book a new session'}</a>
     `
   );
-  return { to: "maritagpsicologa@gmail.com", subject: isEs ? `Cita cancelada · ${d.date}` : `Session cancelled · ${d.date}`, html };
+  return { to: d.clientEmail, subject: isEs ? `Cita cancelada · ${d.date}` : `Session cancelled · ${d.date}`, html };
 }
 
 function emailAdminCancel(d) {
@@ -229,7 +235,7 @@ function emailClientReschedule(d) {
     <a class="btn outline" href="${d.cancelLink}">${isEs ? 'Cancelar cita' : 'Cancel session'}</a>
     `
   );
-  return { to: "maritagpsicologa@gmail.com", subject: isEs ? `Cita reprogramada · ${d.newDate} ${d.newTime}` : `Session rescheduled · ${d.newDate} ${d.newTime}`, html };
+  return { to: d.clientEmail, subject: isEs ? `Cita reprogramada · ${d.newDate} ${d.newTime}` : `Session rescheduled · ${d.newDate} ${d.newTime}`, html };
 }
 
 function emailAdminReschedule(d) {
@@ -281,4 +287,3 @@ function emailClientContactAck(d) {
   );
   return { to: d.email, subject: isEs ? 'He recibido tu mensaje · Marita Galafate Psicóloga' : 'Message received · Marita Galafate Psychologist', html };
 }
-

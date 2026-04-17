@@ -59,6 +59,7 @@ async function showAdminPanel() {
   renderScheduleEditor();
   renderAdminCalendar();
   renderUpcomingBookings();
+  renderDashboardStats();
   setupAdminTabs();
 }
 
@@ -424,4 +425,100 @@ function showAdminMsg(containerId, type, msg) {
   el.textContent = msg;
   el.style.display = 'block';
   setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+// ─── Pacientes ────────────────────────────────────────────────────────────────
+async function renderPatients(searchTerm = '') {
+  const container = document.getElementById('patients-list');
+  if (!container) return;
+
+  container.innerHTML = '<p style="color:var(--text3);font-size:13px">Cargando pacientes...</p>';
+
+  // Recopilar todos los pacientes únicos de las reservas
+  const patientsMap = {};
+  Object.entries(allBookings).forEach(([date, slots]) => {
+    Object.entries(slots).forEach(([slotId, booking]) => {
+      const email = booking.clientEmail;
+      if (!email) return;
+      if (!patientsMap[email]) {
+        patientsMap[email] = {
+          name:    booking.clientName,
+          email:   booking.clientEmail,
+          phone:   booking.clientPhone || '—',
+          bookings: []
+        };
+      }
+      patientsMap[email].bookings.push({ date, time: booking.time, status: booking.status, modality: booking.modality });
+    });
+  });
+
+  let patients = Object.values(patientsMap);
+
+  // Filtrar por búsqueda
+  if (searchTerm) {
+    const s = searchTerm.toLowerCase();
+    patients = patients.filter(p =>
+      p.name.toLowerCase().includes(s) ||
+      p.email.toLowerCase().includes(s) ||
+      p.phone.includes(s)
+    );
+  }
+
+  // Ordenar por nombre
+  patients.sort((a, b) => a.name.localeCompare(b.name));
+
+  if (patients.length === 0) {
+    container.innerHTML = '<p class="no-bookings">No se encontraron pacientes.</p>';
+    return;
+  }
+
+  let html = `<table class="bookings-table">
+    <thead><tr>
+      <th>Nombre</th><th>Email</th><th>Teléfono</th><th>Citas totales</th><th>Última cita</th><th>Acciones</th>
+    </tr></thead><tbody>`;
+
+  patients.forEach(p => {
+    const confirmed = p.bookings.filter(b => b.status !== 'cancelled');
+    const sorted    = [...p.bookings].sort((a,b) => b.date.localeCompare(a.date));
+    const last      = sorted[0];
+    html += `<tr>
+      <td><strong>${p.name}</strong></td>
+      <td><a href="mailto:${p.email}">${p.email}</a></td>
+      <td><a href="tel:${p.phone}">${p.phone}</a></td>
+      <td><span class="status-badge st-confirmed">${confirmed.length} cita${confirmed.length !== 1 ? 's' : ''}</span></td>
+      <td>${last ? formatDateShort(last.date) + ' · ' + last.time : '—'}</td>
+      <td class="booking-actions">
+        <button class="btn-sm" onclick="viewPatientDetail('${p.email}')">Ver historial</button>
+        <a class="btn-sm" href="mailto:${p.email}">Email</a>
+        <a class="btn-sm" href="tel:${p.phone}">Llamar</a>
+      </td>
+    </tr>`;
+  });
+
+  html += `</tbody></table>`;
+  container.innerHTML = html;
+
+  document.getElementById('patients-count').textContent = `${patients.length} paciente${patients.length !== 1 ? 's' : ''}`;
+}
+
+function viewPatientDetail(email) {
+  const patientsMap = {};
+  Object.entries(allBookings).forEach(([date, slots]) => {
+    Object.entries(slots).forEach(([slotId, booking]) => {
+      if (booking.clientEmail === email) {
+        if (!patientsMap[email]) patientsMap[email] = { name: booking.clientName, email, phone: booking.clientPhone || '—', bookings: [] };
+        patientsMap[email].bookings.push({ date, time: booking.time, status: booking.status, modality: booking.modality });
+      }
+    });
+  });
+
+  const p = patientsMap[email];
+  if (!p) return;
+
+  const sorted = [...p.bookings].sort((a,b) => b.date.localeCompare(a.date));
+  const lines  = sorted.map(b =>
+    `${formatDateShort(b.date)} ${b.time} · ${b.modality === 'online' ? 'Online' : 'Presencial'} · ${b.status === 'confirmed' ? 'Confirmada' : 'Cancelada'}`
+  ).join('\n');
+
+  alert(`PACIENTE: ${p.name}\nEmail: ${p.email}\nTeléfono: ${p.phone}\n\nHISTORIAL DE CITAS:\n${lines}`);
 }

@@ -208,6 +208,7 @@
     <button class="admin-tab-btn" data-tab="bookings">Reservas</button>
     <button class="admin-tab-btn" data-tab="schedule">Horarios</button>
     <button class="admin-tab-btn" data-tab="calendar">Días especiales</button>
+    <button class="admin-tab-btn" data-tab="patients">Pacientes</button>
   </nav>
 
   <main class="admin-content">
@@ -257,6 +258,20 @@
       <div id="admin-calendar"></div>
     </div>
 
+    <!-- ── PACIENTES ── -->
+    <div id="tab-patients" class="admin-tab-content">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem">
+        <div style="display:flex;align-items:center;gap:.75rem">
+          <h2 style="font-size:20px;font-weight:500">Pacientes</h2>
+          <span id="patients-count" style="font-size:13px;color:var(--text3)"></span>
+        </div>
+        <input type="text" id="patients-search" placeholder="Buscar por nombre, email o teléfono..."
+          oninput="renderPatients(this.value)"
+          style="padding:9px 14px;border:.5px solid var(--border);border-radius:var(--r);font-family:inherit;font-size:13px;width:280px;outline:none" />
+      </div>
+      <div id="patients-list" style="overflow-x:auto"></div>
+    </div>
+
   </main>
 </div>
 
@@ -302,6 +317,17 @@
     renderUpcomingBookings(filter);
   }
   initAdmin();
+
+  // Hook into tab switching to load patients
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.admin-tab-btn');
+    if (btn && btn.dataset.tab === 'patients') {
+      setTimeout(() => renderPatients(), 50);
+    }
+    if (btn && btn.dataset.tab === 'dashboard') {
+      setTimeout(() => renderDashboardStats(), 50);
+    }
+  });
 </script>
 </body>
 </html>
