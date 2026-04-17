@@ -146,7 +146,7 @@ function emailClientConfirm(d) {
     <p style="font-size:13px;color:#999;margin-top:24px">${isEs ? 'Si tienes preguntas, escríbeme a maritagpsicologa@gmail.com o llama al +34 697 911 679.' : 'For any questions, email maritagpsicologa@gmail.com or call +34 697 911 679.'}</p>
     `
   );
-  return { to: d.clientEmail, subject, html };
+  return { to: "maritagpsicologa@gmail.com", subject, html };
 }
 
 function emailAdminNewBooking(d) {
@@ -191,7 +191,7 @@ function emailClientCancel(d) {
     <a class="btn" href="${d.bookingUrl}">${isEs ? 'Reservar nueva cita' : 'Book a new session'}</a>
     `
   );
-  return { to: d.clientEmail, subject: isEs ? `Cita cancelada · ${d.date}` : `Session cancelled · ${d.date}`, html };
+  return { to: "maritagpsicologa@gmail.com", subject: isEs ? `Cita cancelada · ${d.date}` : `Session cancelled · ${d.date}`, html };
 }
 
 function emailAdminCancel(d) {
@@ -229,7 +229,7 @@ function emailClientReschedule(d) {
     <a class="btn outline" href="${d.cancelLink}">${isEs ? 'Cancelar cita' : 'Cancel session'}</a>
     `
   );
-  return { to: d.clientEmail, subject: isEs ? `Cita reprogramada · ${d.newDate} ${d.newTime}` : `Session rescheduled · ${d.newDate} ${d.newTime}`, html };
+  return { to: "maritagpsicologa@gmail.com", subject: isEs ? `Cita reprogramada · ${d.newDate} ${d.newTime}` : `Session rescheduled · ${d.newDate} ${d.newTime}`, html };
 }
 
 function emailAdminReschedule(d) {
@@ -281,3 +281,4 @@ function emailClientContactAck(d) {
   );
   return { to: d.email, subject: isEs ? 'He recibido tu mensaje · Marita Galafate Psicóloga' : 'Message received · Marita Galafate Psychologist', html };
 }
+
