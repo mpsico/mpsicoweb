@@ -75,6 +75,7 @@ function buildEmails(type, d) {
       emailAdminContact(d),
       emailClientContactAck(d)
     ];
+    case 'admin_otp': return [emailAdminOtp(d)];
     default:
       throw new Error(`Unknown email type: ${type}`);
   }
@@ -286,4 +287,23 @@ function emailClientContactAck(d) {
     `
   );
   return { to: d.email, subject: isEs ? 'He recibido tu mensaje · Marita Galafate Psicóloga' : 'Message received · Marita Galafate Psychologist', html };
+}
+
+function emailAdminOtp(d) {
+  const html = wrap(
+    'Código de verificación',
+    'Panel de administración · Marita Galafate',
+    `
+    <p>Has iniciado sesión en el panel de administración. Usa este código para completar la verificación:</p>
+    <div style="text-align:center;margin:28px 0">
+      <div style="display:inline-block;background:#f8faf8;border:.5px solid #d1ead9;border-radius:12px;padding:20px 40px">
+        <div style="font-size:40px;font-weight:600;letter-spacing:8px;color:#0F6E56;font-family:monospace">${d.code}</div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:#888;text-align:center">Este código caduca en <strong>10 minutos</strong>. No lo compartas con nadie.</p>
+    <p style="font-size:13px;color:#888;text-align:center">Si no has intentado acceder al panel, ignora este email.</p>
+    `,
+    '🔐'
+  );
+  return { to: d.email, subject: `${d.code} — Código de verificación · Panel Admin`, html };
 }

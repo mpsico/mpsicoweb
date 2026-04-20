@@ -405,6 +405,38 @@ function renderDashboardStats() {
   set('stat-week',      thisWeek);
   set('stat-month',     thisMonth);
   set('stat-total',     total);
+
+  // Render upcoming bookings in dashboard
+  const dashList = document.getElementById('bookings-list-dashboard');
+  if (!dashList) return;
+  const today2 = new Date().toISOString().split('T')[0];
+  let rows = [];
+  Object.entries(allBookings).forEach(([date, slots]) => {
+    Object.entries(slots).forEach(([slotId, booking]) => {
+      if (date < today2 || booking.status === 'cancelled') return;
+      rows.push({ date, slotId, ...booking });
+    });
+  });
+  rows.sort((a,b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+  rows = rows.slice(0, 5);
+
+  if (rows.length === 0) {
+    dashList.innerHTML = '<p style="font-size:14px;color:var(--text3)">No hay citas próximas.</p>';
+    return;
+  }
+
+  let html = '<table class="bookings-table"><thead><tr><th>Fecha</th><th>Hora</th><th>Cliente</th><th>Modalidad</th><th>Estado</th></tr></thead><tbody>';
+  rows.forEach(b => {
+    html += `<tr>
+      <td>${formatDateShort(b.date)}</td>
+      <td><strong>${b.time}</strong></td>
+      <td>${b.clientName}</td>
+      <td>${b.modality === 'online' ? '🌐 Online' : '📍 Presencial'}</td>
+      <td><span class="status-badge st-confirmed">Confirmada</span></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  dashList.innerHTML = html;
 }
 
 // ─── Utilidades ───────────────────────────────────────────────────────────────

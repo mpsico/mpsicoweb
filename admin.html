@@ -3,331 +3,321 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Panel Admin · Marita Galafate</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" />
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{
-      --green-900:#04342C;--green-800:#085041;--green-700:#0F6E56;
-      --green-600:#1D9E75;--green-100:#E1F5EE;--green-50:#F0FBF7;
-      --text:#1a1a1a;--text2:#555;--text3:#888;
-      --bg:#f8f9f4;--card:#fff;--border:rgba(0,0,0,.09);
-      --r:8px;--r2:12px;
+      --g9:#04342C;--g8:#085041;--g7:#0F6E56;--g6:#1D9E75;--g1:#E1F5EE;--g0:#F0FBF7;
+      --t:#1a1a1a;--t2:#555;--t3:#888;
+      --bg:#f4f6f3;--card:#fff;--border:rgba(0,0,0,.08);
+      --r:8px;--r2:12px;--r3:16px;
+      --sh:0 2px 12px rgba(0,0,0,.07);--sh2:0 8px 32px rgba(0,0,0,.12);
     }
-    body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-    a{color:inherit;text-decoration:none}
-    button{font-family:inherit;cursor:pointer;border:none;background:none}
+    body{font-family:"DM Sans",system-ui,sans-serif;background:var(--bg);color:var(--t);min-height:100vh}
+    a{color:inherit;text-decoration:none} button{font-family:inherit;cursor:pointer;border:none;background:none}
+    input,select,textarea{font-family:inherit}
 
     /* LOGIN */
-    #admin-login{
-      display:flex;align-items:center;justify-content:center;
-      min-height:100vh;padding:1rem;
-      background:linear-gradient(135deg,var(--green-900),var(--green-700));
-    }
-    .login-box{
-      background:#fff;border-radius:var(--r2);padding:2.5rem 2rem;
-      width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.2);
-    }
-    .login-box h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
-    .login-box p{font-size:13px;color:var(--text3);margin-bottom:1.5rem}
-    .form-group{margin-bottom:1rem}
-    .form-group label{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
-    .form-group input{width:100%;padding:10px 12px;border:.5px solid rgba(0,0,0,.15);border-radius:var(--r);font-family:inherit;font-size:14px;outline:none;transition:border-color .15s}
-    .form-group input:focus{border-color:var(--green-600)}
-    #login-error{display:none;font-size:13px;color:#991b1b;background:#fee2e2;border-radius:var(--r);padding:8px 12px;margin-top:.5rem}
-    .btn-login{width:100%;padding:12px;background:var(--green-700);color:#fff;font-size:14px;font-weight:500;border-radius:var(--r);margin-top:.5rem;transition:background .15s}
-    .btn-login:hover{background:var(--green-800)}
+    #admin-login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;background:linear-gradient(135deg,var(--g9),var(--g7))}
+    .login-box{background:#fff;border-radius:20px;padding:2.5rem 2rem;width:100%;max-width:400px;box-shadow:var(--sh2)}
+    .login-logo{text-align:center;margin-bottom:1.5rem}
+    .login-logo img{height:44px}
+    .login-box h1{font-size:20px;font-weight:500;text-align:center;margin-bottom:.2rem}
+    .login-sub{font-size:13px;color:var(--t3);text-align:center;margin-bottom:1.5rem}
+    .fg{margin-bottom:1rem}
+    .fg label{display:block;font-size:11px;font-weight:500;color:var(--t2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
+    .fg input{width:100%;padding:11px 14px;border:.5px solid rgba(0,0,0,.14);border-radius:var(--r);font-size:14px;outline:none;transition:border-color .15s}
+    .fg input:focus{border-color:var(--g6);box-shadow:0 0 0 3px rgba(29,158,117,.1)}
+    .err{display:none;font-size:13px;color:#991b1b;background:#fee2e2;border-radius:var(--r);padding:8px 12px;margin-bottom:.75rem;text-align:center}
+    .btn-login{width:100%;padding:13px;background:var(--g7);color:#fff;font-size:14px;font-weight:500;border-radius:var(--r);transition:background .15s}
+    .btn-login:hover{background:var(--g8)}
+    .login-links{display:flex;justify-content:space-between;margin-top:1.25rem;font-size:12px}
+    .login-links a{color:var(--g7)}
+    #step-2fa,#step-reset{display:none}
+    .otp-wrap{display:flex;gap:8px;justify-content:center;margin:1rem 0}
+    .otp-i{width:44px;height:52px;border:.5px solid rgba(0,0,0,.15);border-radius:var(--r);text-align:center;font-size:20px;font-weight:500;outline:none}
+    .otp-i:focus{border-color:var(--g6);box-shadow:0 0 0 3px rgba(29,158,117,.1)}
+    .reset-ok{display:none;background:var(--g1);border:.5px solid #9FE1CB;border-radius:var(--r);padding:12px;text-align:center;font-size:13px;color:#085041;margin-bottom:1rem}
 
     /* PANEL */
     #admin-panel{display:none;min-height:100vh}
-    .admin-header{
-      background:var(--green-900);color:#fff;
-      padding:0 1.5rem;height:60px;
-      display:flex;align-items:center;justify-content:space-between;
-      position:sticky;top:0;z-index:100;
-    }
-    .admin-header h1{font-size:16px;font-weight:500}
-    .admin-header .back{font-size:13px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:6px}
-    .admin-header .back:hover{color:#fff}
-    .btn-logout{font-size:13px;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:100px;border:.5px solid rgba(255,255,255,.2);transition:all .15s}
-    .btn-logout:hover{background:rgba(255,255,255,.1);color:#fff}
+    .adm-hdr{background:var(--g9);color:#fff;padding:0 1.5rem;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+    .adm-hdr-l{display:flex;align-items:center;gap:.75rem}
+    .adm-hdr img{height:30px;filter:brightness(0) invert(1);opacity:.8}
+    .adm-hdr h1{font-size:13px;font-weight:400;color:rgba(255,255,255,.6)}
+    .btn-hdr{font-size:12px;color:rgba(255,255,255,.6);padding:6px 14px;border-radius:100px;border:.5px solid rgba(255,255,255,.2);transition:all .15s;display:flex;align-items:center;gap:5px}
+    .btn-hdr:hover{background:rgba(255,255,255,.1);color:#fff}
+    .dot-online{width:7px;height:7px;border-radius:50%;background:#4ade80}
 
-    .admin-tabs{
-      background:#fff;border-bottom:.5px solid var(--border);
-      display:flex;gap:0;overflow-x:auto;
-    }
-    .admin-tab-btn{
-      padding:14px 20px;font-size:14px;font-weight:400;color:var(--text2);
-      border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;
-    }
-    .admin-tab-btn.active{color:var(--green-700);border-bottom-color:var(--green-700);font-weight:500}
-    .admin-tab-btn:hover{color:var(--green-700)}
+    .adm-side{position:fixed;top:62px;left:0;bottom:0;width:210px;background:#fff;border-right:.5px solid var(--border);overflow-y:auto;z-index:100;padding:1rem 0}
+    .side-sec{margin-bottom:1.25rem}
+    .side-sec-title{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);padding:0 1.1rem;margin-bottom:.4rem}
+    .side-btn{width:100%;display:flex;align-items:center;gap:9px;padding:8px 1.1rem;font-size:13px;color:var(--t2);transition:all .15s;text-align:left;border-left:2px solid transparent}
+    .side-btn:hover{background:var(--g0);color:var(--g7)}
+    .side-btn.active{background:var(--g0);color:var(--g7);border-left-color:var(--g6);font-weight:500}
+    .side-ico{font-size:14px;width:18px;text-align:center;flex-shrink:0}
 
-    .admin-content{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
-    .admin-tab-content{display:none}
+    .adm-main{margin-left:210px;padding:1.75rem;min-height:calc(100vh - 62px)}
+    .tab-content{display:none} .tab-content.active{display:block}
 
-    /* Stats */
-    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
-    .stat-card{background:var(--card);border-radius:var(--r2);padding:1.25rem 1.5rem;border:.5px solid var(--border)}
-    .stat-card .s-label{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
-    .stat-card .s-num{font-size:32px;font-weight:500;color:var(--green-700)}
+    .pg-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem}
+    .pg-hdr h2{font-size:21px;font-weight:500}
+    .pg-hdr p{font-size:13px;color:var(--t3);margin-top:2px}
 
-    /* Schedule */
-    .sched-day{background:var(--card);border:.5px solid var(--border);border-radius:var(--r2);padding:1.25rem 1.5rem;margin-bottom:.75rem}
-    .sched-day-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
-    .toggle-label{display:flex;align-items:center;gap:10px;cursor:pointer}
-    .toggle-label input[type=checkbox]{width:36px;height:20px;accent-color:var(--green-600);cursor:pointer}
-    .toggle-track{}
-    .day-name{font-size:14px;font-weight:500}
-    .day-closed{font-size:13px;color:var(--text3)}
-    .btn-add-slot{font-size:12px;color:var(--green-700);border:.5px solid var(--green-600);padding:4px 12px;border-radius:100px}
-    .btn-add-slot:hover{background:var(--green-100)}
-    .slot-inputs{display:flex;flex-wrap:wrap;gap:8px}
-    .slot-input-row{display:flex;align-items:center;gap:4px}
-    .slot-input-row input[type=time]{padding:6px 10px;border:.5px solid var(--border);border-radius:var(--r);font-size:13px;font-family:inherit}
-    .btn-del-slot{width:24px;height:24px;border-radius:50%;background:#fee2e2;color:#991b1b;font-size:11px;display:flex;align-items:center;justify-content:center}
-    .btn-del-slot:hover{background:#fecaca}
-    .no-slots-admin{font-size:13px;color:var(--text3)}
-    .btn-save-sched{background:var(--green-700);color:#fff;font-size:14px;font-weight:500;padding:12px 28px;border-radius:var(--r);margin-top:1.25rem;transition:background .15s}
-    .btn-save-sched:hover{background:var(--green-800)}
+    /* STATS */
+    .stats-g{display:grid;grid-template-columns:repeat(4,1fr);gap:.875rem;margin-bottom:1.75rem}
+    .s-card{background:var(--card);border-radius:var(--r3);padding:1.1rem 1.35rem;border:.5px solid var(--border);box-shadow:var(--sh)}
+    .s-card .sl{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;font-weight:500;margin-bottom:.35rem}
+    .s-card .sn{font-size:34px;font-weight:500;color:var(--g7);line-height:1}
+    .s-card .ss{font-size:12px;color:var(--t3);margin-top:.2rem}
+    .s-card.acc{background:var(--g7)} .s-card.acc .sl,.s-card.acc .ss{color:rgba(255,255,255,.6)} .s-card.acc .sn{color:#fff}
 
-    /* Calendar admin */
-    .admin-cal-cell{cursor:pointer;position:relative}
-    .admin-cal-cell:hover{background:var(--green-100)!important}
-    .admin-cal-cell.sp-closed{background:#fee2e2!important;color:#991b1b}
-    .admin-cal-cell.sp-special{background:#fef9c3!important;color:#78350f}
+    /* CARD */
+    .a-card{background:var(--card);border-radius:var(--r3);border:.5px solid var(--border);box-shadow:var(--sh);overflow:hidden;margin-bottom:1.25rem}
+    .a-card-hdr{display:flex;align-items:center;justify-content:space-between;padding:.875rem 1.1rem;border-bottom:.5px solid var(--border)}
+    .a-card-hdr h3{font-size:14px;font-weight:500}
+    .a-card-body{padding:1.1rem}
+
+    /* TABLE */
+    .dtbl{width:100%;border-collapse:collapse;font-size:13px}
+    .dtbl th{text-align:left;padding:9px 13px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);border-bottom:.5px solid var(--border);background:#fafafa;white-space:nowrap}
+    .dtbl td{padding:11px 13px;border-bottom:.5px solid var(--border);vertical-align:middle}
+    .dtbl tbody tr:hover td{background:var(--g0)} .dtbl tbody tr:last-child td{border-bottom:none}
+
+    /* BADGES */
+    .bdg{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 9px;border-radius:100px;font-weight:500;white-space:nowrap}
+    .bdg-g{background:#E1F5EE;color:#085041} .bdg-r{background:#fee2e2;color:#991b1b}
+    .bdg-y{background:#fef9c3;color:#78350f} .bdg-b{background:#dbeafe;color:#1e40af}
+
+    /* BTNS */
+    .btn{display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:var(--r);font-size:13px;font-weight:500;transition:all .15s;cursor:pointer;border:none}
+    .btn-p{background:var(--g7);color:#fff} .btn-p:hover{background:var(--g8);transform:translateY(-1px)}
+    .btn-s{background:var(--bg);color:var(--t2);border:.5px solid var(--border)} .btn-s:hover{background:#eee}
+    .btn-d{background:#fee2e2;color:#991b1b} .btn-d:hover{background:#fecaca}
+    .bsm{padding:5px 11px;font-size:12px;border-radius:100px;border:.5px solid var(--border);color:var(--t2);transition:all .15s;display:inline-flex;align-items:center;gap:4px;cursor:pointer;background:none;font-family:inherit}
+    .bsm:hover{background:var(--g1);border-color:var(--g6);color:var(--g7)}
+    .bsm.rd{color:#991b1b;border-color:#fecaca} .bsm.rd:hover{background:#fee2e2}
+
+    /* FILTER BAR */
+    .f-bar{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+    .f-tab{font-size:12px;padding:5px 13px;border-radius:100px;border:.5px solid var(--border);color:var(--t2);transition:all .15s;cursor:pointer;background:none;font-family:inherit}
+    .f-tab.active,.f-tab:hover{background:var(--g7);color:#fff;border-color:var(--g7)}
+    .s-inp{padding:8px 13px;border:.5px solid var(--border);border-radius:var(--r);font-size:13px;outline:none}
+    .s-inp:focus{border-color:var(--g6)}
+
+    /* MODAL */
+    .m-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);backdrop-filter:blur(2px);align-items:center;justify-content:center;z-index:400;padding:1rem}
+    .m-ov.open{display:flex}
+    .m-box{background:#fff;border-radius:var(--r3);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:var(--sh2)}
+    .m-hdr{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.35rem;border-bottom:.5px solid var(--border)}
+    .m-hdr h3{font-size:15px;font-weight:500}
+    .m-close{width:28px;height:28px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--t3);transition:all .15s;cursor:pointer;border:none;font-family:inherit}
+    .m-close:hover{background:#eee}
+    .m-body{padding:1.35rem}
+    .m-foot{display:flex;gap:.5rem;justify-content:flex-end;padding:.875rem 1.35rem;border-top:.5px solid var(--border);background:#fafafa}
+    .mfg{margin-bottom:.875rem}
+    .mfg label{display:block;font-size:11px;font-weight:500;color:var(--t2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+    .mfg input,.mfg select,.mfg textarea{width:100%;padding:9px 12px;border:.5px solid rgba(0,0,0,.14);border-radius:var(--r);font-size:14px;outline:none;transition:border-color .15s;font-family:inherit}
+    .mfg input:focus,.mfg select:focus{border-color:var(--g6)}
+    .mfg textarea{resize:vertical;min-height:70px}
+
+    /* SCHED */
+    .sday{background:var(--card);border:.5px solid var(--border);border-radius:var(--r2);padding:1.1rem 1.35rem;margin-bottom:.6rem;box-shadow:var(--sh)}
+    .sday-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
+    .tog-lbl{display:flex;align-items:center;gap:9px;cursor:pointer}
+    .tog-lbl input[type=checkbox]{width:34px;height:18px;accent-color:var(--g6);cursor:pointer}
+    .slot-inp-row{display:flex;align-items:center;gap:4px;margin:.3rem 0}
+    .slot-inp-row input[type=time]{padding:5px 9px;border:.5px solid var(--border);border-radius:var(--r);font-size:13px;font-family:inherit}
+    .btn-del-slot{width:22px;height:22px;border-radius:50%;background:#fee2e2;color:#991b1b;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none}
+    .btn-add-slot{font-size:12px;color:var(--g7);border:.5px solid var(--g6);padding:3px 11px;border-radius:100px;transition:background .15s;cursor:pointer;background:none;font-family:inherit}
+    .btn-add-slot:hover{background:var(--g1)}
+
+    /* CAL */
+    .cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+    .cal-mo{font-size:15px;font-weight:500}
+    .cal-nav{width:30px;height:30px;border-radius:50%;border:.5px solid var(--border);font-size:14px;color:var(--t2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;background:none;font-family:inherit}
+    .cal-nav:hover{background:var(--g1);border-color:var(--g6);color:var(--g7)}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+    .cal-dn{text-align:center;font-size:10px;font-weight:500;color:var(--t3);padding:3px 0 6px;text-transform:uppercase}
+    .cal-cell{aspect-ratio:1;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:12px;position:relative}
+    .cal-cell.empty{background:none} .cal-cell.today{border:1.5px solid var(--g6);font-weight:600}
+    .acal-cell{cursor:pointer;transition:background .15s}
+    .acal-cell:hover{background:var(--g1)!important}
+    .acal-cell.sp-closed{background:#fee2e2!important;color:#991b1b}
+    .acal-cell.sp-special{background:#fef9c3!important;color:#78350f}
     .sp-dot{position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;background:currentColor}
 
-    .upcoming-special{margin-top:1.5rem}
-    .upcoming-special h4{font-size:13px;font-weight:500;color:var(--text2);margin-bottom:.5rem}
-    .sp-item{display:flex;align-items:center;gap:.75rem;padding:8px 0;border-bottom:.5px solid var(--border);font-size:13px}
-    .sp-item em{color:var(--text3);font-size:12px;flex:1}
-    .sp-item button{font-size:12px;color:#991b1b}
+    /* MISC */
+    .adm-msg{display:none;padding:9px 13px;border-radius:var(--r);font-size:13px;margin:.5rem 0}
+    .adm-msg.ok{background:var(--g1);color:#085041;border:.5px solid #9FE1CB}
+    .adm-msg.er{background:#fee2e2;color:#991b1b;border:.5px solid #fecaca}
+    .no-data{font-size:13px;color:var(--t3);padding:2.5rem 0;text-align:center}
+    .sp-item{display:flex;align-items:center;gap:.65rem;padding:7px 0;border-bottom:.5px solid var(--border);font-size:13px}
+    .sp-item em{color:var(--t3);font-size:12px;flex:1}
     .sp-badge{font-size:11px;padding:2px 8px;border-radius:100px;font-weight:500}
-    .sp-badge.closed{background:#fee2e2;color:#991b1b}
-    .sp-badge.custom{background:#fef9c3;color:#78350f}
+    .sp-badge.closed{background:#fee2e2;color:#991b1b} .sp-badge.custom{background:#fef9c3;color:#78350f}
+    .toast{position:fixed;bottom:24px;right:24px;padding:11px 18px;border-radius:var(--r2);font-size:13px;box-shadow:var(--sh2);z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s;max-width:300px;color:#fff}
+    .toast.show{transform:none;opacity:1} .toast.ok{background:var(--g8)} .toast.er{background:#991b1b} .toast.info{background:#1a1a1a}
 
-    /* Modal */
-    #special-day-modal{
-      display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);
-      align-items:center;justify-content:center;z-index:200;padding:1rem;
-    }
-    .modal-box{background:#fff;border-radius:var(--r2);padding:2rem;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
-    .modal-box h3{font-size:18px;font-weight:500;margin-bottom:.25rem}
-    .modal-date-display{font-size:14px;color:var(--green-700);font-weight:500;margin-bottom:1.25rem}
-    .modal-footer{display:flex;gap:.5rem;margin-top:1.25rem}
-    .btn-modal-save{flex:1;background:var(--green-700);color:#fff;font-size:14px;font-weight:500;padding:11px;border-radius:var(--r);transition:background .15s}
-    .btn-modal-save:hover{background:var(--green-800)}
-    .btn-modal-cancel{padding:11px 20px;font-size:14px;color:var(--text2);border:.5px solid var(--border);border-radius:var(--r)}
-    .btn-modal-cancel:hover{background:var(--bg)}
-    .form-group select{width:100%;padding:10px 12px;border:.5px solid rgba(0,0,0,.15);border-radius:var(--r);font-family:inherit;font-size:14px;outline:none}
-    .form-group textarea{width:100%;padding:10px 12px;border:.5px solid rgba(0,0,0,.15);border-radius:var(--r);font-family:inherit;font-size:13px;resize:vertical;min-height:80px}
-    .slots-hint{font-size:11px;color:var(--text3);margin-top:4px}
-
-    /* Bookings table */
-    .filter-tabs{display:flex;gap:.5rem;margin-bottom:1rem}
-    .filter-tab{font-size:13px;padding:6px 16px;border-radius:100px;border:.5px solid var(--border);color:var(--text2);transition:all .15s}
-    .filter-tab.active,.filter-tab:hover{background:var(--green-700);color:#fff;border-color:var(--green-700)}
-    .bookings-table{width:100%;border-collapse:collapse;font-size:13px}
-    .bookings-table th{text-align:left;padding:10px 12px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);border-bottom:.5px solid var(--border)}
-    .bookings-table td{padding:12px;border-bottom:.5px solid var(--border);vertical-align:middle}
-    .bookings-table tr:hover td{background:var(--green-50)}
-    .status-badge{font-size:11px;padding:3px 10px;border-radius:100px;font-weight:500}
-    .st-confirmed{background:#E1F5EE;color:#085041}
-    .st-cancelled{background:#fee2e2;color:#991b1b}
-    .booking-actions{display:flex;gap:6px}
-    .btn-sm{font-size:12px;padding:5px 12px;border-radius:100px;border:.5px solid var(--border);color:var(--text2);transition:all .15s}
-    .btn-sm:hover{background:var(--green-100);border-color:var(--green-600);color:var(--green-700)}
-    .btn-sm.danger{color:#991b1b;border-color:#fecaca}
-    .btn-sm.danger:hover{background:#fee2e2}
-    .no-bookings{font-size:14px;color:var(--text3);padding:2rem 0}
-
-    /* Cal shared */
-    .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
-    .cal-month{font-size:15px;font-weight:500}
-    .cal-nav{width:30px;height:30px;border-radius:50%;border:.5px solid var(--border);font-size:15px;color:var(--text2);display:flex;align-items:center;justify-content:center}
-    .cal-nav:hover{background:var(--green-100);border-color:var(--green-600);color:var(--green-700)}
-    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-    .cal-day-name{text-align:center;font-size:10px;font-weight:500;color:var(--text3);padding:3px 0 6px;text-transform:uppercase}
-    .cal-cell{aspect-ratio:1;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:12px;position:relative}
-    .cal-cell.empty{background:none}
-    .cal-cell.today{border:1.5px solid var(--green-600)}
-
-    /* Admin msg */
-    .admin-msg{display:none;padding:10px 14px;border-radius:var(--r);font-size:13px;margin-top:.75rem}
-    .admin-msg.success{background:var(--green-100);color:#085041;border:.5px solid #9FE1CB}
-    .admin-msg.error{background:#fee2e2;color:#991b1b;border:.5px solid #fecaca}
-
-    /* Responsive */
-    @media(max-width:768px){
-      .stats-grid{grid-template-columns:1fr 1fr}
-      .bookings-table{font-size:12px}
-      .admin-content{padding:1rem}
-    }
-    @media(max-width:480px){
-      .stats-grid{grid-template-columns:1fr}
-    }
+    @media(max-width:900px){.adm-side{display:none}.adm-main{margin-left:0}.stats-g{grid-template-columns:1fr 1fr}}
+    @media(max-width:480px){.stats-g{grid-template-columns:1fr}.adm-main{padding:1rem}}
   </style>
 </head>
 <body>
 
-<!-- ── LOGIN ──────────────────────────────────────────────────────────────────── -->
 <div id="admin-login">
   <div class="login-box">
-    <h1>Panel de administración</h1>
-    <p>Marita Galafate · Psicóloga</p>
-    <form id="admin-login-form" novalidate>
-      <div class="form-group">
-        <label for="admin-email">Email</label>
-        <input type="email" id="admin-email" value="maritagpsicologa@gmail.com" required />
+    <div class="login-logo"><img src="assets/logo.png" alt="Marita Galafate" /></div>
+
+    <div id="step-login">
+      <h1>Panel de administración</h1>
+      <p class="login-sub">Acceso exclusivo</p>
+      <div class="err" id="login-err"></div>
+      <form id="login-form" novalidate>
+        <div class="fg"><label>Email</label><input type="email" id="adm-email" value="maritagpsicologa@gmail.com" required /></div>
+        <div class="fg"><label>Contraseña</label><input type="password" id="adm-pwd" required placeholder="••••••••" /></div>
+        <button type="submit" class="btn-login">Entrar →</button>
+      </form>
+      <div class="login-links">
+        <a href="#" onclick="showStep('reset')">¿Olvidaste la contraseña?</a>
+        <a href="es/">← Web</a>
       </div>
-      <div class="form-group">
-        <label for="admin-password">Contraseña</label>
-        <input type="password" id="admin-password" required placeholder="Tu contraseña de Firebase" />
+    </div>
+
+    <div id="step-2fa">
+      <h1>Verificación en dos pasos</h1>
+      <p class="login-sub">Código enviado a <strong id="tfa-em"></strong></p>
+      <div class="otp-wrap">
+        <input class="otp-i" maxlength="1" type="text" inputmode="numeric" />
+        <input class="otp-i" maxlength="1" type="text" inputmode="numeric" />
+        <input class="otp-i" maxlength="1" type="text" inputmode="numeric" />
+        <input class="otp-i" maxlength="1" type="text" inputmode="numeric" />
+        <input class="otp-i" maxlength="1" type="text" inputmode="numeric" />
+        <input class="otp-i" maxlength="1" type="text" inputmode="numeric" />
       </div>
-      <div id="login-error"></div>
-      <button type="submit" class="btn-login">Entrar</button>
-    </form>
-    <p style="font-size:12px;color:#999;margin-top:1rem;text-align:center"><a href="index.html">← Volver a la web</a></p>
+      <div class="err" id="tfa-err"></div>
+      <button class="btn-login" id="btn-otp">Verificar</button>
+      <div style="text-align:center;margin-top:1rem;font-size:12px;color:var(--t3)">
+        <a href="#" onclick="showStep('login')">← Volver</a> &nbsp;·&nbsp;
+        <a href="#" onclick="resendOtp()" style="color:var(--g7)">Reenviar código</a>
+      </div>
+    </div>
+
+    <div id="step-reset">
+      <h1>Restablecer contraseña</h1>
+      <p class="login-sub">Enviaremos un enlace a tu email</p>
+      <div class="reset-ok" id="reset-ok">✓ Email enviado. Revisa tu bandeja.</div>
+      <div class="err" id="reset-err"></div>
+      <div class="fg"><label>Email</label><input type="email" id="reset-email" value="maritagpsicologa@gmail.com" /></div>
+      <button class="btn-login" onclick="sendPwdReset()">Enviar enlace →</button>
+      <div style="text-align:center;margin-top:1rem"><a href="#" onclick="showStep('login')" style="font-size:12px;color:var(--t3)">← Volver al login</a></div>
+    </div>
   </div>
 </div>
 
-<!-- ── PANEL ──────────────────────────────────────────────────────────────────── -->
 <div id="admin-panel">
-  <header class="admin-header">
-    <div style="display:flex;align-items:center;gap:1rem">
-      <a href="index.html" class="back">← Web</a>
+  <header class="adm-hdr">
+    <div class="adm-hdr-l">
+      <img src="assets/logo.png" alt="Logo" />
       <h1>Panel Admin</h1>
     </div>
-    <button class="btn-logout" onclick="adminLogout()">Cerrar sesión</button>
+    <div style="display:flex;align-items:center;gap:.5rem">
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.5)">
+        <div class="dot-online"></div><span id="adm-user"></span>
+      </div>
+      <button class="btn-hdr" onclick="adminLogout()">Salir</button>
+    </div>
   </header>
 
-  <nav class="admin-tabs">
-    <button class="admin-tab-btn" data-tab="dashboard">Dashboard</button>
-    <button class="admin-tab-btn" data-tab="bookings">Reservas</button>
-    <button class="admin-tab-btn" data-tab="schedule">Horarios</button>
-    <button class="admin-tab-btn" data-tab="calendar">Días especiales</button>
-    <button class="admin-tab-btn" data-tab="patients">Pacientes</button>
-  </nav>
+  <aside class="adm-side">
+    <div class="side-sec">
+      <div class="side-sec-title">Principal</div>
+      <button class="side-btn active" onclick="showTab('dashboard')" data-tab="dashboard"><span class="side-ico">📊</span>Dashboard</button>
+      <button class="side-btn" onclick="showTab('bookings')" data-tab="bookings"><span class="side-ico">📅</span>Reservas</button>
+      <button class="side-btn" onclick="showTab('patients')" data-tab="patients"><span class="side-ico">👥</span>Pacientes</button>
+    </div>
+    <div class="side-sec">
+      <div class="side-sec-title">Configuración</div>
+      <button class="side-btn" onclick="showTab('schedule')" data-tab="schedule"><span class="side-ico">🕐</span>Horarios</button>
+      <button class="side-btn" onclick="showTab('specialdays')" data-tab="specialdays"><span class="side-ico">🗓</span>Días especiales</button>
+    </div>
+    <div class="side-sec">
+      <div class="side-sec-title">Web</div>
+      <a class="side-btn" href="es/" target="_blank"><span class="side-ico">🌐</span>Ver web ES</a>
+      <a class="side-btn" href="en/" target="_blank"><span class="side-ico">🌐</span>Ver web EN</a>
+    </div>
+  </aside>
 
-  <main class="admin-content">
+  <main class="adm-main">
 
-    <!-- ── DASHBOARD ── -->
-    <div id="tab-dashboard" class="admin-tab-content">
-      <h2 style="font-size:20px;font-weight:500;margin-bottom:1.5rem">Resumen</h2>
-      <div class="stats-grid">
-        <div class="stat-card"><div class="s-label">Citas próximas</div><div class="s-num" id="stat-upcoming">—</div></div>
-        <div class="stat-card"><div class="s-label">Esta semana</div><div class="s-num" id="stat-week">—</div></div>
-        <div class="stat-card"><div class="s-label">Este mes</div><div class="s-num" id="stat-month">—</div></div>
-        <div class="stat-card"><div class="s-label">Total confirmadas</div><div class="s-num" id="stat-total">—</div></div>
+    <div id="tab-dashboard" class="tab-content active">
+      <div class="pg-hdr"><div><h2>Dashboard</h2><p id="dash-date"></p></div></div>
+      <div class="stats-g">
+        <div class="s-card acc"><div class="sl">Citas próximas</div><div class="sn" id="st-upcoming">—</div><div class="ss">próximos 30 días</div></div>
+        <div class="s-card"><div class="sl">Esta semana</div><div class="sn" id="st-week">—</div><div class="ss">7 días</div></div>
+        <div class="s-card"><div class="sl">Pacientes únicos</div><div class="sn" id="st-patients">—</div><div class="ss">total histórico</div></div>
+        <div class="s-card"><div class="sl">Total confirmadas</div><div class="sn" id="st-total">—</div><div class="ss">históricas</div></div>
       </div>
-      <h3 style="font-size:16px;font-weight:500;margin-bottom:1rem">Próximas citas</h3>
-      <div id="bookings-list-dashboard"></div>
+      <div class="a-card">
+        <div class="a-card-hdr"><h3>Próximas citas</h3><button class="bsm" onclick="showTab('bookings')">Ver todas →</button></div>
+        <div style="overflow-x:auto"><table class="dtbl"><thead><tr><th>Fecha</th><th>Hora</th><th>Paciente</th><th>Modalidad</th><th>Estado</th></tr></thead><tbody id="dash-bk-body"><tr><td colspan="5" class="no-data">Cargando...</td></tr></tbody></table></div>
+      </div>
     </div>
 
-    <!-- ── RESERVAS ── -->
-    <div id="tab-bookings" class="admin-tab-content">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem">
-        <h2 style="font-size:20px;font-weight:500">Gestión de reservas</h2>
-        <div class="filter-tabs">
-          <button class="filter-tab active" onclick="setFilter(this,'upcoming')">Próximas</button>
-          <button class="filter-tab" onclick="setFilter(this,'past')">Pasadas</button>
-          <button class="filter-tab" onclick="setFilter(this,'all')">Todas</button>
+    <div id="tab-bookings" class="tab-content">
+      <div class="pg-hdr"><div><h2>Reservas</h2><p>Gestiona todas las citas</p></div></div>
+      <div class="a-card">
+        <div class="a-card-hdr">
+          <div class="f-bar" style="margin:0">
+            <button class="f-tab active" onclick="setBkFilter(this,'upcoming')">Próximas</button>
+            <button class="f-tab" onclick="setBkFilter(this,'past')">Pasadas</button>
+            <button class="f-tab" onclick="setBkFilter(this,'all')">Todas</button>
+          </div>
+          <input class="s-inp" id="bk-search" placeholder="Buscar..." oninput="renderBookings()" style="max-width:200px" />
         </div>
+        <div id="bk-msg" class="adm-msg"></div>
+        <div style="overflow-x:auto"><table class="dtbl"><thead><tr><th>Fecha</th><th>Hora</th><th>Paciente</th><th>Email</th><th>Teléfono</th><th>Modalidad</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="bk-body"><tr><td colspan="8" class="no-data">Cargando...</td></tr></tbody></table></div>
       </div>
-      <div id="admin-msg" class="admin-msg"></div>
-      <div id="bookings-msg" class="admin-msg"></div>
-      <div id="bookings-list" style="overflow-x:auto"></div>
     </div>
 
-    <!-- ── HORARIOS ── -->
-    <div id="tab-schedule" class="admin-tab-content">
-      <h2 style="font-size:20px;font-weight:500;margin-bottom:.5rem">Horarios regulares</h2>
-      <p style="font-size:13px;color:var(--text3);margin-bottom:1.5rem">Define los días y horas disponibles para reservas. Los días especiales sobreescriben este horario.</p>
-      <div id="schedule-editor"></div>
-      <div id="schedule-msg" class="admin-msg"></div>
-      <button class="btn-save-sched" id="save-schedule-btn" onclick="saveSchedule()">✓ Guardar horario</button>
-    </div>
-
-    <!-- ── DÍAS ESPECIALES ── -->
-    <div id="tab-calendar" class="admin-tab-content">
-      <h2 style="font-size:20px;font-weight:500;margin-bottom:.5rem">Días especiales</h2>
-      <p style="font-size:13px;color:var(--text3);margin-bottom:1.5rem">Haz clic en cualquier día para marcarlo como cerrado o con horario personalizado (vacaciones, festivos, etc).</p>
-      <div id="special-msg" class="admin-msg"></div>
-      <div id="admin-calendar"></div>
-    </div>
-
-    <!-- ── PACIENTES ── -->
-    <div id="tab-patients" class="admin-tab-content">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem">
-        <div style="display:flex;align-items:center;gap:.75rem">
-          <h2 style="font-size:20px;font-weight:500">Pacientes</h2>
-          <span id="patients-count" style="font-size:13px;color:var(--text3)"></span>
-        </div>
-        <input type="text" id="patients-search" placeholder="Buscar por nombre, email o teléfono..."
-          oninput="renderPatients(this.value)"
-          style="padding:9px 14px;border:.5px solid var(--border);border-radius:var(--r);font-family:inherit;font-size:13px;width:280px;outline:none" />
+    <div id="tab-patients" class="tab-content">
+      <div class="pg-hdr"><div><h2>Pacientes</h2><p id="pat-count-lbl">—</p></div></div>
+      <div class="a-card">
+        <div class="a-card-hdr"><input class="s-inp" id="pat-search" placeholder="Buscar por nombre, email o teléfono..." oninput="renderPatients()" style="flex:1;max-width:380px" /></div>
+        <div style="overflow-x:auto"><table class="dtbl"><thead><tr><th>Paciente</th><th>Email</th><th>Teléfono</th><th>Citas</th><th>Última visita</th><th>Acciones</th></tr></thead><tbody id="pat-body"><tr><td colspan="6" class="no-data">Cargando...</td></tr></tbody></table></div>
       </div>
-      <div id="patients-list" style="overflow-x:auto"></div>
+    </div>
+
+    <div id="tab-schedule" class="tab-content">
+      <div class="pg-hdr"><div><h2>Horarios</h2><p>Días y horas disponibles para reservas</p></div></div>
+      <div id="sched-editor"></div>
+      <div id="sched-msg" class="adm-msg"></div>
+      <button class="btn btn-p" onclick="saveSchedule()" style="margin-top:1rem">✓ Guardar horario</button>
+    </div>
+
+    <div id="tab-specialdays" class="tab-content">
+      <div class="pg-hdr"><div><h2>Días especiales</h2><p>Vacaciones, festivos y horarios personalizados</p></div></div>
+      <div id="sp-msg" class="adm-msg"></div>
+      <div class="a-card"><div class="a-card-body"><div id="adm-cal"></div></div></div>
     </div>
 
   </main>
 </div>
 
-<!-- ── MODAL DÍAS ESPECIALES ─────────────────────────────────────────────────── -->
-<div id="special-day-modal">
-  <div class="modal-box">
-    <h3>Editar día</h3>
-    <p class="modal-date-display" id="sd-date-display"></p>
-    <input type="hidden" id="sd-date" />
-    <div class="form-group">
-      <label>Estado del día</label>
-      <select id="sd-open" onchange="toggleSpecialDaySlots()">
-        <option value="open">Abierto (con horario personalizado)</option>
-        <option value="closed">Cerrado (festivo / vacaciones)</option>
-      </select>
-    </div>
-    <div class="form-group" id="sd-slots-wrap">
-      <label>Horarios disponibles (uno por línea, formato HH:MM)</label>
-      <textarea id="sd-slots" placeholder="09:00&#10;10:00&#10;11:00&#10;17:00&#10;18:00"></textarea>
-      <p class="slots-hint">Deja vacío para usar el horario regular</p>
-    </div>
-    <div class="form-group">
-      <label>Etiqueta (opcional)</label>
-      <input type="text" id="sd-label" placeholder="Ej: Festivo, Vacaciones..." />
-    </div>
-    <div class="modal-footer">
-      <button class="btn-modal-save" onclick="saveSpecialDay()">Guardar</button>
-      <button class="btn-modal-cancel" onclick="closeSpecialDayModal()">Cancelar</button>
-    </div>
-  </div>
-</div>
+<!-- MODALS -->
+<div id="bk-modal" class="m-ov"><div class="m-box" style="max-width:520px"><div class="m-hdr"><h3 id="bk-m-title">Cita</h3><button class="m-close" onclick="closeModal('bk-modal')">✕</button></div><div class="m-body" id="bk-m-body"></div><div class="m-foot" id="bk-m-foot"></div></div></div>
+<div id="pat-modal" class="m-ov"><div class="m-box" style="max-width:560px"><div class="m-hdr"><h3 id="pat-m-title">Paciente</h3><button class="m-close" onclick="closeModal('pat-modal')">✕</button></div><div class="m-body" id="pat-m-body"></div></div></div>
+<div id="sp-modal" class="m-ov"><div class="m-box"><div class="m-hdr"><h3>Día especial</h3><button class="m-close" onclick="closeModal('sp-modal')">✕</button></div><div class="m-body"><p style="font-size:14px;font-weight:500;color:var(--g7);margin-bottom:1.1rem" id="sp-date-disp"></p><input type="hidden" id="sp-date" /><div class="mfg"><label>Estado</label><select id="sp-open" onchange="toggleSpSlots()"><option value="open">Abierto (horario personalizado)</option><option value="closed">Cerrado</option></select></div><div class="mfg" id="sp-slots-wrap"><label>Horarios (uno por línea HH:MM)</label><textarea id="sp-slots" placeholder="09:00&#10;10:00"></textarea></div><div class="mfg"><label>Etiqueta (opcional)</label><input type="text" id="sp-label" placeholder="Festivo, Vacaciones..." /></div></div><div class="m-foot"><button class="btn btn-s" onclick="closeModal('sp-modal')">Cancelar</button><button class="btn btn-p" onclick="saveSpecialDay()">Guardar</button></div></div></div>
+<div id="confirm-modal" class="m-ov"><div class="m-box" style="max-width:380px"><div class="m-hdr"><h3 id="cfm-title">Confirmar</h3><button class="m-close" onclick="closeModal('confirm-modal')">✕</button></div><div class="m-body"><p id="cfm-text" style="font-size:14px;color:var(--t2);line-height:1.6"></p></div><div class="m-foot"><button class="btn btn-s" onclick="closeModal('confirm-modal')">Cancelar</button><button class="btn btn-d" id="cfm-btn">Confirmar</button></div></div></div>
+<div id="toast" class="toast"></div>
 
-<!-- Scripts -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="firebase-config.js"></script>
-<script src="js/admin.js"></script>
-<script>
-  function setFilter(btn, filter) {
-    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderUpcomingBookings(filter);
-  }
-  initAdmin();
-
-  // Hook into tab switching to load patients
-  document.addEventListener('click', e => {
-    const btn = e.target.closest('.admin-tab-btn');
-    if (btn && btn.dataset.tab === 'patients') {
-      setTimeout(() => renderPatients(), 50);
-    }
-    if (btn && btn.dataset.tab === 'dashboard') {
-      setTimeout(() => renderDashboardStats(), 50);
-    }
-  });
-</script>
+<script src="js/admin-v2.js"></script>
 </body>
 </html>
