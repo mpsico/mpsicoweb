@@ -71,6 +71,7 @@ function showStep(step) {
 function showLogin() {
   document.getElementById('admin-login').style.display = 'flex';
   document.getElementById('admin-panel').style.display = 'none';
+  const mn = document.getElementById('mob-nav'); if (mn) mn.style.display = 'none';
   showStep('login');
 }
 
@@ -162,6 +163,7 @@ async function sendPwdReset() {
 async function showPanel(user) {
   document.getElementById('admin-login').style.display = 'none';
   document.getElementById('admin-panel').style.display = 'block';
+  const mn = document.getElementById('mob-nav'); if (mn) mn.style.display = 'flex';
   document.getElementById('adm-user').textContent = user.email;
 
   const now = new Date();
@@ -185,10 +187,15 @@ function showTab(tab) {
   if (el) el.classList.add('active');
   document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
 
-  if (tab === 'dashboard') renderDashboard();
-  if (tab === 'patients')  renderPatients();
-  if (tab === 'schedule')  renderScheduleEditor();
+  if (tab === 'dashboard')   renderDashboard();
+  if (tab === 'patients')    renderPatients();
+  if (tab === 'schedule')    renderScheduleEditor();
   if (tab === 'specialdays') renderAdminCal();
+}
+
+function setMobActive(btn) {
+  document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
 }
 
 // ─── Bookings: load + render ───────────────────────────────────────────────────
@@ -493,40 +500,126 @@ function renderScheduleEditor() {
   const container = document.getElementById('sched-editor');
   if (!container) return;
   container.innerHTML = '';
+
   for (let dow = 0; dow < 7; dow++) {
     const day = adminSchedule[dow] || { open: false, slots: [] };
+    const slots = Array.isArray(day.slots) ? day.slots : [];
+
     const div = document.createElement('div');
     div.className = 'sday';
-    div.innerHTML = `
-      <div class="sday-hdr">
-        <label class="tog-lbl">
-          <input type="checkbox" ${day.open ? 'checked' : ''} onchange="toggleDay(${dow}, this.checked)" />
-          <span style="font-size:14px;font-weight:500">${DAY_LABELS[dow]}</span>
-        </label>
-        ${day.open ? `<button class="btn-add-slot" onclick="addSlot(${dow})">+ Añadir hora</button>` : ''}
-      </div>
-      ${day.open ? renderSlotInputs(dow, day.slots) : '<p style="font-size:13px;color:var(--t3)">Cerrado</p>'}
+    div.id = `sday-${dow}`;
+
+    // Header
+    const hdr = document.createElement('div');
+    hdr.className = 'sday-hdr';
+    hdr.innerHTML = `
+      <label class="tog-lbl">
+        <input type="checkbox" id="sday-chk-${dow}" ${day.open ? 'checked' : ''} />
+        <span style="font-size:14px;font-weight:500">${DAY_LABELS[dow]}</span>
+      </label>
+      <button class="btn-add-slot" id="sday-addbtn-${dow}" style="display:${day.open ? 'inline-block' : 'none'}">+ Añadir hora</button>
     `;
+    div.appendChild(hdr);
+
+    // Slots container
+    const slotsWrap = document.createElement('div');
+    slotsWrap.id = `slots-wrap-${dow}`;
+    slotsWrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;margin-top:.5rem';
+    if (!day.open) slotsWrap.style.display = 'none';
+
+    if (slots.length === 0 && day.open) {
+      slotsWrap.innerHTML = '<p style="font-size:13px;color:var(--t3);width:100%">Sin horas. Pulsa "+ Añadir hora".</p>';
+    } else {
+      slots.forEach((slot, i) => {
+        slotsWrap.appendChild(createSlotRow(dow, i, slot));
+      });
+    }
+    div.appendChild(slotsWrap);
+
+    // Wire up checkbox
+    hdr.querySelector(`#sday-chk-${dow}`).addEventListener('change', function() {
+      adminSchedule[dow].open = this.checked;
+      document.getElementById(`sday-addbtn-${dow}`).style.display = this.checked ? 'inline-block' : 'none';
+      document.getElementById(`slots-wrap-${dow}`).style.display = this.checked ? 'flex' : 'none';
+    });
+
+    // Wire up add button
+    hdr.querySelector(`#sday-addbtn-${dow}`).addEventListener('click', () => {
+      const newSlot = '09:00';
+      if (!Array.isArray(adminSchedule[dow].slots)) adminSchedule[dow].slots = [];
+      const idx = adminSchedule[dow].slots.length;
+      adminSchedule[dow].slots.push(newSlot);
+      // Remove "sin horas" placeholder if present
+      const wrap = document.getElementById(`slots-wrap-${dow}`);
+      wrap.querySelectorAll('p').forEach(p => p.remove());
+      wrap.appendChild(createSlotRow(dow, idx, newSlot));
+    });
+
     container.appendChild(div);
   }
 }
 
-function renderSlotInputs(dow, slots) {
-  if (!slots?.length) return '<p style="font-size:13px;color:var(--t3)">Sin horas definidas.</p>';
-  return `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:.5rem">${
-    slots.map((slot, i) => `<div class="slot-inp-row">
-      <input type="time" value="${slot}" onchange="updateSlot(${dow},${i},this.value)" />
-      <button class="btn-del-slot" onclick="deleteSlot(${dow},${i})" title="Eliminar">✕</button>
-    </div>`).join('')
-  }</div>`;
+function createSlotRow(dow, i, value) {
+  const row = document.createElement('div');
+  row.className = 'slot-inp-row';
+  row.dataset.dow = dow;
+  row.dataset.idx = i;
+
+  const input = document.createElement('input');
+  input.type  = 'time';
+  input.value = value;
+  // On change: update state directly, NO re-render, NO sort
+  input.addEventListener('change', function() {
+    if (adminSchedule[dow] && Array.isArray(adminSchedule[dow].slots)) {
+      // Find actual index from current DOM position
+      const wrap    = document.getElementById(`slots-wrap-${dow}`);
+      const rows    = Array.from(wrap.querySelectorAll('.slot-inp-row'));
+      const domIdx  = rows.indexOf(row);
+      if (domIdx >= 0) adminSchedule[dow].slots[domIdx] = this.value;
+    }
+  });
+
+  const delBtn = document.createElement('button');
+  delBtn.className = 'btn-del-slot';
+  delBtn.title = 'Eliminar';
+  delBtn.textContent = '✕';
+  delBtn.addEventListener('click', () => {
+    // Find DOM index and remove from state
+    const wrap   = document.getElementById(`slots-wrap-${dow}`);
+    const rows   = Array.from(wrap.querySelectorAll('.slot-inp-row'));
+    const domIdx = rows.indexOf(row);
+    if (domIdx >= 0 && adminSchedule[dow].slots) {
+      adminSchedule[dow].slots.splice(domIdx, 1);
+    }
+    row.remove();
+    if (wrap.querySelectorAll('.slot-inp-row').length === 0) {
+      wrap.innerHTML = '<p style="font-size:13px;color:var(--t3);width:100%">Sin horas. Pulsa "+ Añadir hora".</p>';
+    }
+  });
+
+  row.appendChild(input);
+  row.appendChild(delBtn);
+  return row;
 }
 
 function toggleDay(dow, open) { adminSchedule[dow] = { ...adminSchedule[dow], open }; renderScheduleEditor(); }
-function addSlot(dow) { if (!adminSchedule[dow].slots) adminSchedule[dow].slots = []; adminSchedule[dow].slots.push('09:00'); renderScheduleEditor(); }
-function updateSlot(dow, i, val) { adminSchedule[dow].slots[i] = val; adminSchedule[dow].slots.sort(); }
-function deleteSlot(dow, i) { adminSchedule[dow].slots.splice(i, 1); renderScheduleEditor(); }
+function addSlot(dow) { /* handled inline */ }
+function updateSlot(dow, i, val) { /* handled inline */ }
+function deleteSlot(dow, i) { /* handled inline */ }
 
 async function saveSchedule() {
+  // Read current DOM values before saving to catch any missed change events
+  for (let dow = 0; dow < 7; dow++) {
+    const wrap = document.getElementById(`slots-wrap-${dow}`);
+    const chk  = document.getElementById(`sday-chk-${dow}`);
+    if (!wrap || !chk) continue;
+
+    adminSchedule[dow].open = chk.checked;
+    const inputs = Array.from(wrap.querySelectorAll('input[type="time"]'));
+    if (inputs.length > 0) {
+      adminSchedule[dow].slots = inputs.map(inp => inp.value).filter(Boolean);
+    }
+  }
   await db.ref('schedule').set(adminSchedule);
   showToast('Horario guardado correctamente', 'ok');
 }

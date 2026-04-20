@@ -162,8 +162,32 @@
     .toast{position:fixed;bottom:24px;right:24px;padding:11px 18px;border-radius:var(--r2);font-size:13px;box-shadow:var(--sh2);z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s;max-width:300px;color:#fff}
     .toast.show{transform:none;opacity:1} .toast.ok{background:var(--g8)} .toast.er{background:#991b1b} .toast.info{background:#1a1a1a}
 
-    @media(max-width:900px){.adm-side{display:none}.adm-main{margin-left:0}.stats-g{grid-template-columns:1fr 1fr}}
-    @media(max-width:480px){.stats-g{grid-template-columns:1fr}.adm-main{padding:1rem}}
+    /* Mobile nav bottom bar */
+    .mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:.5px solid var(--border);z-index:200;padding:0;box-shadow:0 -2px 12px rgba(0,0,0,.06)}
+    .mob-nav-inner{display:flex;align-items:stretch}
+    .mob-nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;font-size:10px;color:var(--t3);transition:color .15s;gap:3px;border:none;background:none;cursor:pointer;font-family:inherit}
+    .mob-nav-btn.active{color:var(--g7)}
+    .mob-nav-btn .mob-ico{font-size:18px;line-height:1}
+    @media(max-width:900px){
+      .adm-side{display:none}
+      .adm-main{margin-left:0;padding-bottom:80px}
+      .stats-g{grid-template-columns:1fr 1fr}
+      .mob-nav{display:flex}
+    }
+    @media(max-width:600px){
+      .stats-g{grid-template-columns:1fr 1fr}
+      .adm-main{padding:1rem;padding-bottom:80px}
+      .adm-hdr h1{display:none}
+      .dtbl th:nth-child(4),.dtbl td:nth-child(4),
+      .dtbl th:nth-child(5),.dtbl td:nth-child(5){display:none}
+      .bsm{padding:4px 8px;font-size:11px}
+      .m-box{border-radius:var(--r2) var(--r2) 0 0;position:fixed;bottom:0;left:0;right:0;max-width:100%;max-height:90vh}
+      .m-ov{align-items:flex-end;padding:0}
+    }
+    @media(max-width:400px){
+      .stats-g{grid-template-columns:1fr}
+      .dtbl th:nth-child(3),.dtbl td:nth-child(3){display:none}
+    }
   </style>
 </head>
 <body>
@@ -313,6 +337,27 @@
 <div id="sp-modal" class="m-ov"><div class="m-box"><div class="m-hdr"><h3>Día especial</h3><button class="m-close" onclick="closeModal('sp-modal')">✕</button></div><div class="m-body"><p style="font-size:14px;font-weight:500;color:var(--g7);margin-bottom:1.1rem" id="sp-date-disp"></p><input type="hidden" id="sp-date" /><div class="mfg"><label>Estado</label><select id="sp-open" onchange="toggleSpSlots()"><option value="open">Abierto (horario personalizado)</option><option value="closed">Cerrado</option></select></div><div class="mfg" id="sp-slots-wrap"><label>Horarios (uno por línea HH:MM)</label><textarea id="sp-slots" placeholder="09:00&#10;10:00"></textarea></div><div class="mfg"><label>Etiqueta (opcional)</label><input type="text" id="sp-label" placeholder="Festivo, Vacaciones..." /></div></div><div class="m-foot"><button class="btn btn-s" onclick="closeModal('sp-modal')">Cancelar</button><button class="btn btn-p" onclick="saveSpecialDay()">Guardar</button></div></div></div>
 <div id="confirm-modal" class="m-ov"><div class="m-box" style="max-width:380px"><div class="m-hdr"><h3 id="cfm-title">Confirmar</h3><button class="m-close" onclick="closeModal('confirm-modal')">✕</button></div><div class="m-body"><p id="cfm-text" style="font-size:14px;color:var(--t2);line-height:1.6"></p></div><div class="m-foot"><button class="btn btn-s" onclick="closeModal('confirm-modal')">Cancelar</button><button class="btn btn-d" id="cfm-btn">Confirmar</button></div></div></div>
 <div id="toast" class="toast"></div>
+
+<!-- Mobile bottom nav -->
+<nav class="mob-nav" id="mob-nav">
+  <div class="mob-nav-inner">
+    <button class="mob-nav-btn active" onclick="showTab('dashboard');setMobActive(this)">
+      <span class="mob-ico">📊</span>Dashboard
+    </button>
+    <button class="mob-nav-btn" onclick="showTab('bookings');setMobActive(this)">
+      <span class="mob-ico">📅</span>Reservas
+    </button>
+    <button class="mob-nav-btn" onclick="showTab('patients');setMobActive(this)">
+      <span class="mob-ico">👥</span>Pacientes
+    </button>
+    <button class="mob-nav-btn" onclick="showTab('schedule');setMobActive(this)">
+      <span class="mob-ico">🕐</span>Horarios
+    </button>
+    <button class="mob-nav-btn" onclick="showTab('specialdays');setMobActive(this)">
+      <span class="mob-ico">🗓</span>Días
+    </button>
+  </div>
+</nav>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
