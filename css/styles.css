@@ -1051,14 +1051,12 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 /* ─── Logo in nav ────────────────────────────────────────────────────────────── */
 .nav-logo-img {
-  height: 36px;
+  height: 34px;
   width: auto;
   object-fit: contain;
-  filter: brightness(0) invert(1) sepia(1) saturate(2) hue-rotate(120deg);
   transition: opacity .2s;
 }
-.nav-logo-img:hover { opacity: .8; }
-#main-nav.scrolled .nav-logo-img { filter: none; }
+.nav-logo-img:hover { opacity: .75; }
 
 /* ─── Footer columns ────────────────────────────────────────────────────────── */
 .footer-cols {
