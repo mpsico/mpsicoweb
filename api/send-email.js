@@ -10,38 +10,49 @@ export default async function handler(req, res) {
   if (!RESEND_KEY) return res.status(500).json({ error: 'Missing RESEND_API_KEY' });
 
   const { type, data } = req.body;
+  if (!type || !data) return res.status(400).json({ error: 'Missing type or data' });
 
   try {
     const emails = buildEmails(type, data);
     const results = await Promise.all(emails.map(e => sendEmail(RESEND_KEY, e)));
 
-    // Add to Google Calendar on new confirmed booking
+    // Google Calendar — errors are non-fatal, don't block email delivery
     if (type === 'booking_confirm') {
-      await addToGoogleCalendar(data).catch(err => console.error('GCal error:', err));
-    }
-    if (type === 'booking_reschedule') {
-      await updateGoogleCalendarEvent(data).catch(err => console.error('GCal update error:', err));
-    }
-    if (type === 'booking_cancel') {
-      await deleteGoogleCalendarEvent(data).catch(err => console.error('GCal delete error:', err));
+      addToGoogleCalendar(data).catch(err => console.error('GCal add error:', err.message));
+    } else if (type === 'booking_reschedule') {
+      updateGoogleCalendarEvent(data).catch(err => console.error('GCal update error:', err.message));
+    } else if (type === 'booking_cancel') {
+      deleteGoogleCalendarEvent(data).catch(err => console.error('GCal delete error:', err.message));
     }
 
     return res.status(200).json({ success: true, results });
   } catch (err) {
-    console.error('Handler error:', err);
+    console.error('Handler error:', err.message, err.stack);
     return res.status(500).json({ error: err.message });
   }
 }
 
 // ─── Resend ───────────────────────────────────────────────────────────────────
 async function sendEmail(apiKey, { to, subject, html }) {
-  const FROM = process.env.EMAIL_FROM || 'Marita Galafate · Psicóloga <citas@maritagalafate.com>';
+  // Until maritagalafate.com is verified in Resend, use their sandbox sender
+  // Once domain verified: set EMAIL_FROM env var to "Marita Galafate · Psicóloga <citas@maritagalafate.com>"
+  const FROM = process.env.EMAIL_FROM || 'onboarding@resend.dev';
+  
+  // When using sandbox sender, Resend only allows sending to the account owner's email
+  // So redirect all emails to admin until domain is verified
+  const ADMIN_EMAIL = 'maritagpsicologa@gmail.com';
+  const isVerified  = !!process.env.EMAIL_FROM; // assumes EMAIL_FROM is only set when domain is verified
+  const actualTo    = isVerified ? to : ADMIN_EMAIL;
+
   const resp = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: FROM, to, subject, html })
+    body: JSON.stringify({ from: FROM, to: actualTo, subject, html })
   });
-  if (!resp.ok) { const e = await resp.json(); throw new Error(JSON.stringify(e)); }
+  if (!resp.ok) {
+    const e = await resp.json();
+    throw new Error(`Resend error: ${JSON.stringify(e)}`);
+  }
   return resp.json();
 }
 

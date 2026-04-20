@@ -321,9 +321,15 @@ async function handleBookingSubmit(e) {
           adminLink:      `${origin}/admin.html`
         }
       })
-    });
+    }).then(async r => {
+      if (!r.ok) {
+        const errBody = await r.json().catch(() => ({}));
+        console.error('Email API error:', r.status, errBody);
+        // Don't block booking success if only email fails
+      }
+    }).catch(err => console.error('Email fetch error:', err));
 
-    // Éxito
+    // Éxito — reserva guardada aunque falle el email
     showBookingSuccess(name, lang);
 
   } catch (err) {
