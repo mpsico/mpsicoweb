@@ -58,7 +58,7 @@
     .side-btn{width:100%;display:flex;align-items:center;gap:9px;padding:8px 1.1rem;font-size:13px;color:var(--t2);transition:all .15s;text-align:left;border-left:2px solid transparent}
     .side-btn:hover{background:var(--g0);color:var(--g7)}
     .side-btn.active{background:var(--g0);color:var(--g7);border-left-color:var(--g6);font-weight:500}
-    .side-ico{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+    .side-ico{width:16px;height:16px;flex-shrink:0;display:block}
 
     .adm-main{margin-left:210px;padding:1.75rem;min-height:calc(100vh - 62px)}
     .tab-content{display:none} .tab-content.active{display:block}
@@ -165,24 +165,42 @@
     /* Mobile nav bottom bar */
     .mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:.5px solid var(--border);z-index:200;padding:0;box-shadow:0 -2px 12px rgba(0,0,0,.06)}
     .mob-nav-inner{display:flex;align-items:stretch}
-    .mob-nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;font-size:10px;color:var(--t3);transition:color .15s;gap:3px;border:none;background:none;cursor:pointer;font-family:inherit}
+    .mob-nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 2px 10px;font-size:9px;color:var(--t3);transition:color .15s;gap:4px;border:none;background:none;cursor:pointer;font-family:inherit;white-space:nowrap;letter-spacing:.01em}
     .mob-nav-btn.active{color:var(--g7)}
-    .mob-nav-btn .mob-ico{font-size:18px;line-height:1}
+    .mob-nav-btn svg{transition:stroke .15s}
+
+    /* Admin calendar compact */
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+    .cal-cell{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;position:relative}
+    #adm-cal .cal-cell{font-size:13px}
+
+    @media(min-width:901px){
+      /* Desktop: hide bottom nav, show sidebar */
+      .mob-nav{display:none!important}
+    }
     @media(max-width:900px){
-      .adm-side{display:none}
-      .adm-main{margin-left:0;padding-bottom:80px}
+      .adm-side{display:none!important}
+      .adm-main{margin-left:0;padding-bottom:72px}
       .stats-g{grid-template-columns:1fr 1fr}
       .mob-nav{display:flex}
     }
     @media(max-width:600px){
-      .stats-g{grid-template-columns:1fr 1fr}
-      .adm-main{padding:1rem;padding-bottom:80px}
+      .adm-main{padding:12px;padding-bottom:72px}
+      .adm-hdr{padding:0 12px;height:52px}
+      .adm-hdr img{height:24px}
       .adm-hdr h1{display:none}
+      #adm-user{display:none}
+      /* Tables: hide less critical columns */
       .dtbl th:nth-child(4),.dtbl td:nth-child(4),
       .dtbl th:nth-child(5),.dtbl td:nth-child(5){display:none}
-      .bsm{padding:4px 8px;font-size:11px}
-      .m-box{border-radius:var(--r2) var(--r2) 0 0;position:fixed;bottom:0;left:0;right:0;max-width:100%;max-height:90vh}
+      /* Modals slide up from bottom */
       .m-ov{align-items:flex-end;padding:0}
+      .m-box{border-radius:var(--r2) var(--r2) 0 0;max-width:100%;max-height:88vh}
+      /* Calendar compact */
+      #adm-cal .cal-cell{font-size:11px}
+      .cal-mo{font-size:13px}
+      .bsm{padding:4px 8px;font-size:11px}
+      .pg-hdr h2{font-size:17px}
     }
     @media(max-width:400px){
       .stats-g{grid-template-columns:1fr}
@@ -259,19 +277,40 @@
   <aside class="adm-side">
     <div class="side-sec">
       <div class="side-sec-title">Principal</div>
-      <button class="side-btn active" onclick="showTab('dashboard')" data-tab="dashboard"><span class="side-ico">📊</span>Dashboard</button>
-      <button class="side-btn" onclick="showTab('bookings')" data-tab="bookings"><span class="side-ico">📅</span>Reservas</button>
-      <button class="side-btn" onclick="showTab('patients')" data-tab="patients"><span class="side-ico">👥</span>Pacientes</button>
+      <button class="side-btn active" onclick="showTab('dashboard')" data-tab="dashboard">
+        <svg class="side-ico" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><rect x="1" y="1" width="7" height="7" rx="1.2"/><rect x="10" y="1" width="7" height="7" rx="1.2"/><rect x="1" y="10" width="7" height="7" rx="1.2"/><rect x="10" y="10" width="7" height="7" rx="1.2"/></svg>
+        Dashboard
+      </button>
+      <button class="side-btn" onclick="showTab('bookings')" data-tab="bookings">
+        <svg class="side-ico" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><rect x="2" y="3" width="14" height="13" rx="2"/><path d="M6 1v4M12 1v4M2 8h14"/></svg>
+        Reservas
+      </button>
+      <button class="side-btn" onclick="showTab('patients')" data-tab="patients">
+        <svg class="side-ico" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><circle cx="7" cy="5" r="3"/><path d="M1 16c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="14" cy="6" r="2"/><path d="M17 16c0-2.2-1.3-4-3-4"/></svg>
+        Pacientes
+      </button>
     </div>
     <div class="side-sec">
       <div class="side-sec-title">Configuración</div>
-      <button class="side-btn" onclick="showTab('schedule')" data-tab="schedule"><span class="side-ico">🕐</span>Horarios</button>
-      <button class="side-btn" onclick="showTab('specialdays')" data-tab="specialdays"><span class="side-ico">🗓</span>Días especiales</button>
+      <button class="side-btn" onclick="showTab('schedule')" data-tab="schedule">
+        <svg class="side-ico" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><circle cx="9" cy="9" r="7"/><path d="M9 4.5V9l2.5 2.5"/></svg>
+        Horarios
+      </button>
+      <button class="side-btn" onclick="showTab('specialdays')" data-tab="specialdays">
+        <svg class="side-ico" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><rect x="2" y="3" width="14" height="13" rx="2"/><path d="M6 1v4M12 1v4M2 8h14M6 12h.01M9 12h.01M12 12h.01"/></svg>
+        Días especiales
+      </button>
     </div>
     <div class="side-sec">
       <div class="side-sec-title">Web</div>
-      <a class="side-btn" href="es/" target="_blank"><span class="side-ico">🌐</span>Ver web ES</a>
-      <a class="side-btn" href="en/" target="_blank"><span class="side-ico">🌐</span>Ver web EN</a>
+      <a class="side-btn" href="es/" target="_blank">
+        <svg class="side-ico" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><circle cx="9" cy="9" r="7"/><path d="M9 2c-2 2.5-3 4.8-3 7s1 4.5 3 7M9 2c2 2.5 3 4.8 3 7s-1 4.5-3 7M2 9h14"/></svg>
+        Ver web ES
+      </a>
+      <a class="side-btn" href="en/" target="_blank">
+        <svg class="side-ico" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><circle cx="9" cy="9" r="7"/><path d="M9 2c-2 2.5-3 4.8-3 7s1 4.5 3 7M9 2c2 2.5 3 4.8 3 7s-1 4.5-3 7M2 9h14"/></svg>
+        Ver web EN
+      </a>
     </div>
   </aside>
 
@@ -342,19 +381,24 @@
 <nav class="mob-nav" id="mob-nav">
   <div class="mob-nav-inner">
     <button class="mob-nav-btn active" onclick="showTab('dashboard');setMobActive(this)">
-      <span class="mob-ico">📊</span>Dashboard
+      <svg class="mob-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg>
+      Dashboard
     </button>
     <button class="mob-nav-btn" onclick="showTab('bookings');setMobActive(this)">
-      <span class="mob-ico">📅</span>Reservas
+      <svg class="mob-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><rect x="3" y="4" width="14" height="14" rx="2"/><path d="M7 2v4M13 2v4M3 9h14"/></svg>
+      Reservas
     </button>
     <button class="mob-nav-btn" onclick="showTab('patients');setMobActive(this)">
-      <span class="mob-ico">👥</span>Pacientes
+      <svg class="mob-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><circle cx="8" cy="6" r="3"/><path d="M2 17c0-3.314 2.686-6 6-6s6 2.686 6 6"/><circle cx="15" cy="7" r="2"/><path d="M18 17c0-2.21-1.343-4-3-4"/></svg>
+      Pacientes
     </button>
     <button class="mob-nav-btn" onclick="showTab('schedule');setMobActive(this)">
-      <span class="mob-ico">🕐</span>Horarios
+      <svg class="mob-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 3"/></svg>
+      Horarios
     </button>
     <button class="mob-nav-btn" onclick="showTab('specialdays');setMobActive(this)">
-      <span class="mob-ico">🗓</span>Días
+      <svg class="mob-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><rect x="3" y="4" width="14" height="14" rx="2"/><path d="M7 2v4M13 2v4M3 9h14M7 13h.01M10 13h.01M13 13h.01"/></svg>
+      Días
     </button>
   </div>
 </nav>

@@ -255,7 +255,7 @@ async function handleBookingSubmit(e) {
 
   bookingInProgress = true;
   const btn = document.getElementById('booking-submit-btn');
-  if (btn) { btn.disabled = true; btn.textContent = t('booking.submitting'); }
+  if (btn) { btn.disabled = true; btn.textContent = lang==='es' ? 'Reservando...' : 'Booking...'; }
 
   // ─── Bloqueo de concurrencia con transacción Firebase ────────────────────
   const slotRef = db.ref(`bookings/${selectedDate}/${selectedSlot.replace(':','')}`);
@@ -281,7 +281,7 @@ async function handleBookingSubmit(e) {
     });
 
     if (!result.committed) {
-      showMsg('booking-msg', 'error', t('booking.errorSlot'));
+      showMsg('booking-msg', 'error', lang==='es' ? 'Esta hora ya no está disponible. Elige otra.' : 'This slot is no longer available. Please choose another.');
       resetBookingBtn();
       return;
     }
@@ -328,7 +328,7 @@ async function handleBookingSubmit(e) {
 
   } catch (err) {
     console.error(err);
-    showMsg('booking-msg', 'error', t('booking.errorGeneral'));
+    showMsg('booking-msg', 'error', lang==='es' ? 'Error al reservar. Inténtalo de nuevo.' : 'Booking error. Please try again.');
     resetBookingBtn();
   } finally {
     bookingInProgress = false;
@@ -354,7 +354,7 @@ function showBookingSuccess(name, lang) {
 
 function resetBookingBtn() {
   const btn = document.getElementById('booking-submit-btn');
-  if (btn) { btn.disabled = false; btn.textContent = t('booking.submitBtn'); }
+  if (btn) { btn.disabled = false; btn.textContent = lang==='es' ? 'Confirmar reserva' : 'Confirm booking'; }
 }
 
 // ─── Cancelación desde link ───────────────────────────────────────────────────

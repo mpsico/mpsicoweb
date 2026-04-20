@@ -650,21 +650,24 @@ function renderAdminCal(year, month) {
     <span class="cal-mo">${MONTHS_ES[calMonth]} ${calYear}</span>
     <button class="cal-nav" onclick="renderAdminCal(${nextYear},${nextMon})">&#8250;</button>
   </div>
-  <div class="cal-grid">
-    ${['Lu','Ma','Mi','Ju','Vi','Sa','Do'].map(d => `<div class="cal-dn">${d}</div>`).join('')}`;
+  <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px">
+    ${['Lu','Ma','Mi','Ju','Vi','Sa','Do'].map(d => `<div style="text-align:center;font-size:10px;font-weight:500;color:var(--t3);padding:4px 0;text-transform:uppercase">${d}</div>`).join('')}
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px">`;
 
   let startDow = firstDay.getDay();
   startDow = startDow === 0 ? 6 : startDow - 1;
-  for (let i = 0; i < startDow; i++) html += `<div class="cal-cell empty"></div>`;
+  for (let i = 0; i < startDow; i++) html += `<div style="height:36px"></div>`;
 
   for (let d = 1; d <= lastDay.getDate(); d++) {
     const dateStr = `${calYear}-${pad(calMonth+1)}-${pad(d)}`;
     const sp = adminSpecialDays[dateStr];
     const isToday = dateStr === today;
-    let cls = 'cal-cell acal-cell';
-    if (isToday) cls += ' today';
-    if (sp) cls += sp.open === false ? ' sp-closed' : ' sp-special';
-    html += `<div class="${cls}" onclick="openSpModal('${dateStr}')">${d}${sp ? '<span class="sp-dot"></span>' : ''}</div>`;
+    let style = `height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;position:relative;transition:background .15s;`;
+    if (sp) style += sp.open === false ? 'background:#fee2e2;color:#991b1b;' : 'background:#fef9c3;color:#78350f;';
+    else style += 'background:#f8faf7;color:var(--t);';
+    if (isToday) style += 'outline:2px solid var(--g6);outline-offset:-2px;font-weight:600;';
+    html += `<div style="${style}" onclick="openSpModal('${dateStr}')" onmouseover="this.style.filter='brightness(0.93)'" onmouseout="this.style.filter=''">${d}${sp ? '<span style="position:absolute;top:2px;right:2px;width:4px;height:4px;border-radius:50%;background:currentColor"></span>' : ''}</div>`;
   }
 
   html += `</div>`;
@@ -675,13 +678,13 @@ function renderAdminCal(year, month) {
     .slice(0, 8);
 
   if (upcoming.length) {
-    html += `<div style="margin-top:1.5rem"><h4 style="font-size:13px;font-weight:500;color:var(--t2);margin-bottom:.5rem">Próximos días especiales</h4>`;
+    html += `<div style="margin-top:1.25rem"><h4 style="font-size:13px;font-weight:500;color:var(--t2);margin-bottom:.5rem">Próximos días especiales</h4>`;
     upcoming.forEach(([date, info]) => {
       html += `<div class="sp-item">
         <span class="sp-badge ${info.open===false?'closed':'custom'}">${info.open===false?'Cerrado':'Personalizado'}</span>
         <span>${fmtDate(date)}</span>
         ${info.label ? `<em>${info.label}</em>` : ''}
-        <button onclick="deleteSpecialDay('${date}')" style="font-size:11px;color:#991b1b;cursor:pointer;background:none;border:none;font-family:inherit">✕</button>
+        <button onclick="deleteSpecialDay('${date}')" style="font-size:11px;color:#991b1b;cursor:pointer;background:none;border:none;font-family:inherit;margin-left:auto">✕</button>
       </div>`;
     });
     html += `</div>`;
