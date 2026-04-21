@@ -13,6 +13,9 @@ let bookingFilter = 'upcoming';
 let otpCode = '';
 let otpExpiry = 0;
 let pendingUser = null;
+let pendingEmail = '';
+let pendingPwd   = '';
+let otpVerified  = false; // true only after OTP confirmed
 
 const DAY_LABELS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 const MONTHS_ES  = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
@@ -27,10 +30,15 @@ const DEFAULT_SCHEDULE = {
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  // onAuthStateChanged: only open panel if 2FA was completed
+  // We use a flag to distinguish "credentials verified, awaiting OTP" vs "fully authenticated"
   auth.onAuthStateChanged(user => {
-    if (user && user.email === ADMIN_EMAIL) {
+    if (user && user.email === ADMIN_EMAIL && otpVerified) {
       showPanel(user);
-    } else {
+    } else if (user && !otpVerified) {
+      // Credentials OK but OTP not done yet — sign out silently and wait
+      auth.signOut();
+    } else if (!user && !otpVerified) {
       showLogin();
     }
   });
@@ -38,13 +46,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // Login form
   document.getElementById('login-form').addEventListener('submit', async e => {
     e.preventDefault();
-    const email = document.getElementById('adm-email').value;
+    const email = document.getElementById('adm-email').value.trim();
     const pwd   = document.getElementById('adm-pwd').value;
     const errEl = document.getElementById('login-err');
+    const btn   = e.target.querySelector('button[type=submit]');
     errEl.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Verificando...';
+
     try {
+      // Verify credentials by signing in, then immediately sign out
+      otpVerified = false;
+      pendingEmail = email;
+      pendingPwd   = pwd;
       const cred = await auth.signInWithEmailAndPassword(email, pwd);
       pendingUser = cred.user;
+      await auth.signOut(); // Sign out — will re-login after OTP
+
       // Send 2FA code
       await send2FACode(email);
       document.getElementById('tfa-em').textContent = email;
@@ -53,7 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       errEl.textContent = 'Email o contraseña incorrectos.';
       errEl.style.display = 'block';
-      await auth.signOut();
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Entrar →';
     }
   });
 
@@ -120,21 +140,47 @@ function setup2FAInputs() {
   inputs[0].focus();
 }
 
-function verifyOtp() {
+async function verifyOtp() {
   const inputs  = document.querySelectorAll('.otp-i');
   const entered = Array.from(inputs).map(i => i.value).join('');
   const errEl   = document.getElementById('tfa-err');
+  const btn     = document.getElementById('btn-otp');
 
-  if (Date.now() > otpExpiry) {
-    errEl.textContent = 'El código ha expirado. Solicita uno nuevo.';
+  if (entered.length < 6) {
+    errEl.textContent = 'Introduce los 6 dígitos.';
     errEl.style.display = 'block';
     return;
   }
-  if (entered === otpCode) {
-    errEl.style.display = 'none';
-    showPanel(pendingUser);
-  } else {
+  if (Date.now() > otpExpiry) {
+    errEl.textContent = 'El código ha expirado. Pulsa "Reenviar código".';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (entered !== otpCode) {
     errEl.textContent = 'Código incorrecto. Inténtalo de nuevo.';
+    errEl.style.display = 'block';
+    // Shake animation
+    inputs.forEach(inp => {
+      inp.style.borderColor = '#991b1b';
+      setTimeout(() => inp.style.borderColor = '', 1500);
+    });
+    return;
+  }
+
+  // OTP correct — set flag and do real login
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Verificando...';
+
+  try {
+    otpVerified = true;
+    const cred = await auth.signInWithEmailAndPassword(pendingEmail, pendingPwd);
+    showPanel(cred.user);
+  } catch (err) {
+    otpVerified = false;
+    btn.disabled = false;
+    btn.textContent = 'Verificar';
+    errEl.textContent = 'Error al iniciar sesión. Vuelve a intentarlo.';
     errEl.style.display = 'block';
   }
 }
@@ -176,6 +222,9 @@ async function showPanel(user) {
 }
 
 function adminLogout() {
+  otpVerified  = false;
+  pendingEmail = '';
+  pendingPwd   = '';
   auth.signOut();
 }
 
