@@ -317,7 +317,7 @@ async function handleBookingSubmit(e) {
           bookingId:      bookingId,
           isNewPatient:   isNewPatient,
           cancelLink:     `${origin}/cancel.html?id=${bookingId}&date=${selectedDate}`,
-          rescheduleLink: `${origin}/index.html?reschedule=${bookingId}&date=${selectedDate}`,
+          rescheduleLink: `${origin}/es/?reschedule=${bookingId}&date=${selectedDate}`,
           adminLink:      `${origin}/admin.html`
         }
       })
@@ -400,7 +400,7 @@ async function cancelBookingFromLink() {
         time:        booking.time,
         lang,
         bookingId,
-        bookingUrl:  `${window.location.origin}/index.html#reservar`,
+        bookingUrl:  `${window.location.origin}/es/#reservar`,
         adminLink:   `${window.location.origin}/admin.html`
       }
     })

@@ -163,11 +163,12 @@
     .toast.show{transform:none;opacity:1} .toast.ok{background:var(--g8)} .toast.er{background:#991b1b} .toast.info{background:#1a1a1a}
 
     /* Mobile nav bottom bar */
-    .mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:.5px solid var(--border);z-index:200;box-shadow:0 -2px 12px rgba(0,0,0,.06)}
-    .mob-nav-inner{display:flex;align-items:stretch;height:58px}
-    .mob-nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 2px 8px;font-size:9px;font-weight:500;color:#aaa;letter-spacing:.02em;transition:color .15s;gap:4px;border:none;background:none;cursor:pointer;font-family:inherit;min-width:0}
+    .mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e8ece6;z-index:200;box-shadow:0 -4px 20px rgba(0,0,0,.06)}
+    .mob-nav-inner{display:flex;height:60px}
+    .mob-nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0;border:none;background:none;cursor:pointer;font-family:inherit;color:#b0b8b0;transition:color .2s;-webkit-tap-highlight-color:transparent}
+    .mob-nav-btn span{font-size:10px;font-weight:500;letter-spacing:.02em;line-height:1}
     .mob-nav-btn.active{color:var(--g7)}
-    .mob-nav-btn svg{flex-shrink:0}
+    .mob-nav-btn svg{display:block;flex-shrink:0}
 
     /* Admin calendar compact */
     .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
@@ -382,23 +383,23 @@
   <div class="mob-nav-inner">
     <button class="mob-nav-btn active" onclick="showTab('dashboard');setMobActive(this)">
       <svg class="mob-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg>
-      Dashboard
+      <span>Dashboard</span>
     </button>
     <button class="mob-nav-btn" onclick="showTab('bookings');setMobActive(this)">
       <svg class="mob-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><rect x="3" y="4" width="14" height="14" rx="2"/><path d="M7 2v4M13 2v4M3 9h14"/></svg>
-      Reservas
+      <span>Reservas</span>
     </button>
     <button class="mob-nav-btn" onclick="showTab('patients');setMobActive(this)">
       <svg class="mob-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><circle cx="8" cy="6" r="3"/><path d="M2 17c0-3.314 2.686-6 6-6s6 2.686 6 6"/><circle cx="15" cy="7" r="2"/><path d="M18 17c0-2.21-1.343-4-3-4"/></svg>
-      Pacientes
+      <span>Pacientes</span>
     </button>
     <button class="mob-nav-btn" onclick="showTab('schedule');setMobActive(this)">
       <svg class="mob-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 3"/></svg>
-      Horarios
+      <span>Horarios</span>
     </button>
     <button class="mob-nav-btn" onclick="showTab('specialdays');setMobActive(this)">
       <svg class="mob-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><rect x="3" y="4" width="14" height="14" rx="2"/><path d="M7 2v4M13 2v4M3 9h14M7 13h.01M10 13h.01M13 13h.01"/></svg>
-      Días
+      <span>Días</span>
     </button>
   </div>
 </nav>
