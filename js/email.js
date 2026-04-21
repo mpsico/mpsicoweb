@@ -27,7 +27,7 @@ async function sendConfirmationToClient(booking) {
     date: formatDateLong(booking.date, booking.lang),
     time: booking.time,
     modality: booking.modality === 'online'
-      ? (booking.lang === 'es' ? 'Online (Zoom/Skype)' : 'Online (Zoom/Skype)')
+      ? (booking.lang === 'es' ? 'Online (Zoom/Skype/Meet/Teams)' : 'Online (Zoom/Skype/Meet/Teams)')
       : (booking.lang === 'es' ? 'Presencial – Av. Alcalde Álvaro Domecq 18, Jerez' : 'In-person – Av. Alcalde Álvaro Domecq 18, Jerez'),
     cancel_link: `${window.location.origin}/cancel.html?id=${booking.id}`,
     reschedule_link: `${window.location.origin}/index.html?reschedule=${booking.id}`,

@@ -788,6 +788,40 @@ function fmtDateLong(dateStr, lang = 'es') {
 let allBlogPosts = [];
 let blogFilter   = 'all';
 
+// WYSIWYG helpers
+function fmt(cmd, val) {
+  document.getElementById('pm-editor').focus();
+  document.execCommand(cmd, false, val || null);
+}
+function insertLink() {
+  const url = prompt('URL del enlace:');
+  if (url) { document.getElementById('pm-editor').focus(); document.execCommand('createLink', false, url); }
+}
+function insertImage() {
+  const url = prompt('URL de la imagen:');
+  if (url) { document.getElementById('pm-editor').focus(); document.execCommand('insertImage', false, url); }
+}
+function previewImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('pm-preview-img').src = e.target.result;
+    document.getElementById('pm-image-preview').style.display = 'flex';
+    document.getElementById('pm-image-preview').style.alignItems = 'center';
+    // Store base64 in the URL field
+    document.getElementById('pm-image').value = e.target.result;
+    document.getElementById('pm-image').dataset.isBase64 = '1';
+  };
+  reader.readAsDataURL(file);
+}
+function clearImage() {
+  document.getElementById('pm-image').value = '';
+  document.getElementById('pm-image').dataset.isBase64 = '';
+  document.getElementById('pm-image-preview').style.display = 'none';
+  document.getElementById('pm-image-file').value = '';
+}
+
 function loadBlog() {
   db.ref('blog/posts').orderByChild('publishedAt').on('value', snap => {
     allBlogPosts = [];
@@ -812,20 +846,21 @@ function renderBlog() {
   }
 
   tbody.innerHTML = posts.map(p => {
-    const tags    = (p.tags || []).join(', ') || '—';
-    const date    = p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('es-ES') : '—';
-    const status  = p.published
+    const tags   = (p.tags || []).join(', ') || '—';
+    const date   = p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('es-ES') : '—';
+    const status = p.published
       ? '<span class="bdg bdg-g">Publicado</span>'
       : '<span class="bdg bdg-y">Borrador</span>';
-    const title   = (p.title || '').substring(0, 50) + ((p.title||'').length > 50 ? '…' : '');
+    const hasImg = p.imageUrl ? '📷' : (p.videoUrl ? '▶' : '');
+    const title  = (p.title || '').substring(0, 50) + ((p.title||'').length > 50 ? '…' : '');
     return `<tr>
-      <td><strong>${title}</strong>${p.imageUrl?'<br><span style="font-size:11px;color:var(--t3)">📷 Con imagen</span>':''}${p.videoUrl?'<br><span style="font-size:11px;color:var(--t3)">▶ Con vídeo</span>':''}</td>
+      <td><strong>${title}</strong>${hasImg?` <span style="font-size:11px;color:var(--t3)">${hasImg}</span>`:''}</td>
       <td style="font-size:12px;color:var(--t3)">${tags}</td>
       <td>${status}</td>
       <td style="font-size:12px;white-space:nowrap">${date}</td>
       <td><div style="display:flex;gap:4px;flex-wrap:wrap">
         <button class="bsm" onclick="editPost('${p.id}')">Editar</button>
-        <button class="bsm" onclick="togglePublish('${p.id}',${!p.published})">${p.published?'Despublicar':'Publicar'}</button>
+        <button class="bsm" onclick="togglePublish('${p.id}',${!p.published})">${p.published?'Ocultar':'Publicar'}</button>
         <button class="bsm rd" onclick="deletePost('${p.id}')">Borrar</button>
       </div></td>
     </tr>`;
@@ -841,7 +876,7 @@ function setBlogFilter(btn, filter) {
 
 function openPostModal(id = null) {
   clearPostForm();
-  document.getElementById('pm-id').value       = '';
+  document.getElementById('pm-id').value = '';
   document.getElementById('post-m-title').textContent = 'Nueva publicación';
   if (id) {
     const p = allBlogPosts.find(x => x.id === id);
@@ -850,13 +885,20 @@ function openPostModal(id = null) {
     document.getElementById('pm-id').value       = id;
     document.getElementById('pm-title').value    = p.title || '';
     document.getElementById('pm-excerpt').value  = p.excerpt || '';
-    document.getElementById('pm-content').value  = p.content || '';
+    document.getElementById('pm-editor').innerHTML = p.content || '';
     document.getElementById('pm-image').value    = p.imageUrl || '';
     document.getElementById('pm-video').value    = p.videoUrl || '';
     document.getElementById('pm-emoji').value    = p.emoji || '';
     document.getElementById('pm-readtime').value = p.readTime || '';
     document.getElementById('pm-tags').value     = (p.tags || []).join(', ');
     document.getElementById('pm-published').checked = !!p.published;
+    // Show image preview if exists
+    if (p.imageUrl) {
+      document.getElementById('pm-preview-img').src = p.imageUrl;
+      const prev = document.getElementById('pm-image-preview');
+      prev.style.display = 'flex';
+      prev.style.alignItems = 'center';
+    }
   }
   openModal('post-modal');
   setTimeout(() => document.getElementById('pm-title').focus(), 100);
@@ -865,12 +907,15 @@ function openPostModal(id = null) {
 function editPost(id) { openPostModal(id); }
 
 function clearPostForm() {
-  ['pm-title','pm-excerpt','pm-content','pm-image','pm-video','pm-emoji','pm-readtime','pm-tags'].forEach(id => {
+  ['pm-title','pm-excerpt','pm-image','pm-video','pm-emoji','pm-readtime','pm-tags'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.value = '';
+    if (el) { el.value = ''; delete el.dataset.isBase64; }
   });
+  const editor = document.getElementById('pm-editor');
+  if (editor) editor.innerHTML = '';
   const chk = document.getElementById('pm-published');
   if (chk) chk.checked = false;
+  document.getElementById('pm-image-preview').style.display = 'none';
 }
 
 async function savePost(publish) {
@@ -878,24 +923,28 @@ async function savePost(publish) {
   const title   = document.getElementById('pm-title').value.trim();
   if (!title) { showToast('El título es obligatorio', 'er'); return; }
 
-  const tagsRaw = document.getElementById('pm-tags').value;
-  const tags    = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
-  const isPublished = publish || document.getElementById('pm-published').checked;
+  const tagsRaw    = document.getElementById('pm-tags').value;
+  const tags       = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+  const isPublished = publish !== null ? publish : document.getElementById('pm-published').checked;
+  const content    = document.getElementById('pm-editor').innerHTML.trim();
+
+  // Handle base64 image (uploaded from device)
+  const imageVal = document.getElementById('pm-image').value.trim();
+  const imageUrl = imageVal || null;
 
   const data = {
     title,
-    excerpt:     document.getElementById('pm-excerpt').value.trim(),
-    content:     document.getElementById('pm-content').value.trim(),
-    imageUrl:    document.getElementById('pm-image').value.trim() || null,
-    videoUrl:    document.getElementById('pm-video').value.trim() || null,
-    emoji:       document.getElementById('pm-emoji').value.trim() || '🧠',
-    readTime:    parseInt(document.getElementById('pm-readtime').value) || null,
+    excerpt:   document.getElementById('pm-excerpt').value.trim(),
+    content,
+    imageUrl,
+    videoUrl:  document.getElementById('pm-video').value.trim() || null,
+    emoji:     document.getElementById('pm-emoji').value.trim() || '🧠',
+    readTime:  parseInt(document.getElementById('pm-readtime').value) || null,
     tags,
-    published:   isPublished,
-    updatedAt:   Date.now(),
+    published: isPublished,
+    updatedAt: Date.now(),
   };
-
-  if (!id) data.publishedAt = Date.now(); // new post
+  if (!id) data.publishedAt = Date.now();
 
   if (id) {
     await db.ref(`blog/posts/${id}`).update(data);
@@ -909,7 +958,7 @@ async function savePost(publish) {
 
 async function togglePublish(id, publish) {
   await db.ref(`blog/posts/${id}`).update({ published: publish, updatedAt: Date.now() });
-  showToast(publish ? 'Publicado ✓' : 'Despublicado', 'info');
+  showToast(publish ? 'Publicado ✓' : 'Ocultado', 'info');
 }
 
 async function deletePost(id) {
@@ -922,12 +971,4 @@ async function deletePost(id) {
     showToast('Publicación borrada', 'info');
   };
   openModal('confirm-modal');
-}
-
-function insertHtml(snippet) {
-  const ta  = document.getElementById('pm-content');
-  const pos = ta.selectionStart;
-  ta.value  = ta.value.slice(0, pos) + snippet + ta.value.slice(ta.selectionEnd);
-  ta.setSelectionRange(pos + snippet.length, pos + snippet.length);
-  ta.focus();
 }
