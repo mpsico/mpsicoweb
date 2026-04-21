@@ -289,18 +289,18 @@ async function handleBookingSubmit(e) {
       return;
     }
 
-    const bookingId = result.snapshot.key;
-    const bookingData = result.snapshot.val();
+    const bookingId   = result.snapshot.key;
 
-    // Guardar también en índice por email para cancelaciones
-    await db.ref(`clients/${email.replace(/\./g,'_')}/bookings/${selectedDate}_${bookingId}`).set({
-      date: selectedDate, time: selectedSlot, bookingId, status: 'confirmed'
-    });
-
-    // Detectar si es paciente nuevo (nunca ha reservado antes)
     const origin = window.location.origin;
-    const clientSnap = await db.ref(`clients/${email.replace(/\./g,'_')}`).once('value');
-    const isNewPatient = !clientSnap.exists();
+    // Detectar paciente nuevo ANTES de guardar en clients
+    const clientKey   = email.replace(/\./g, '_');
+    const clientSnap  = await db.ref(`clients/${clientKey}`).once('value').catch(() => null);
+    const isNewPatient = !clientSnap?.exists();
+
+    // Guardar índice por email — no bloqueante
+    db.ref(`clients/${clientKey}/bookings/${selectedDate}_${bookingId}`).set({
+      date: selectedDate, time: selectedSlot, bookingId, status: 'confirmed'
+    }).catch(err => console.warn('clients write failed (non-fatal):', err.message));
 
     await fetch(`${API_BASE}/api/send-email`, {
       method: 'POST',
@@ -364,7 +364,8 @@ function showBookingSuccess(name, lang) {
 
 function resetBookingBtn() {
   const btn = document.getElementById('booking-submit-btn');
-  if (btn) { btn.disabled = false; btn.textContent = lang==='es' ? 'Confirmar reserva' : 'Confirm booking'; }
+  const lang = document.documentElement.lang || 'es';
+  if (btn) { btn.disabled = false; btn.textContent = lang === 'en' ? 'Confirm booking' : 'Confirmar reserva'; }
 }
 
 // ─── Cancelación desde link ───────────────────────────────────────────────────
