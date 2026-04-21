@@ -129,10 +129,13 @@ function renderCalendar(year, month) {
       isPast      ? 'past'      : '',
       isToday     ? 'today'     : '',
       available   ? 'avail'     : 'unavail',
+      special && special.open !== false ? 'sp-open' : '',
+      special && special.open === false ? 'sp-closed' : '',
       selectedDate === dateStr ? 'sel' : ''
     ].filter(Boolean).join(' ');
 
-    html += `<div class="${cls}"${available ? ` onclick="selectDate('${dateStr}')" role="button" tabindex="0"` : ''}>${d}</div>`;
+    const specialLabel = special?.label ? ` data-special data-label="${special.label}"` : (special?.open === false ? ' data-special data-label="Cerrado"' : '');
+    html += `<div class="${cls}"${specialLabel}${available ? ` onclick="selectDate('${dateStr}')" role="button" tabindex="0"` : ''}>${d}</div>`;
   }
 
   html += `</div>

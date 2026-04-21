@@ -19,14 +19,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function setupNavScroll() {
-  const nav = document.getElementById('main-nav');
+  const nav  = document.getElementById('main-nav');
+  const menu = document.getElementById('mobile-menu');
   if (!nav) return;
   let lastY = 0;
   window.addEventListener('scroll', () => {
     const y = window.scrollY;
     if (y > 80) nav.classList.add('scrolled'); else nav.classList.remove('scrolled');
-    if (y > lastY + 5 && y > 200) nav.classList.add('hidden');
-    else if (y < lastY - 5) nav.classList.remove('hidden');
+    if (y > lastY + 5 && y > 200) {
+      nav.classList.add('hidden');
+      // Close mobile menu when nav hides
+      if (menu) menu.style.display = 'none';
+    } else if (y < lastY - 5) {
+      nav.classList.remove('hidden');
+    }
     lastY = y;
   }, { passive: true });
 }

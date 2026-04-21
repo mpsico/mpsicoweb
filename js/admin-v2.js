@@ -545,111 +545,77 @@ async function loadSchedule() {
   }
 }
 
+// All available time slots shown as chips
+const ALL_TIME_SLOTS = [
+  '08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30',
+  '12:00','12:30','13:00','13:30','14:00',
+  '16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00'
+];
+
 function renderScheduleEditor() {
   const container = document.getElementById('sched-editor');
   if (!container) return;
   container.innerHTML = '';
 
   for (let dow = 0; dow < 7; dow++) {
-    const day = adminSchedule[dow] || { open: false, slots: [] };
-    const slots = Array.isArray(day.slots) ? day.slots : [];
+    const day   = adminSchedule[dow] || { open: false, slots: [] };
+    const slots = new Set(Array.isArray(day.slots) ? day.slots : []);
 
     const div = document.createElement('div');
     div.className = 'sday';
     div.id = `sday-${dow}`;
 
-    // Header
-    const hdr = document.createElement('div');
-    hdr.className = 'sday-hdr';
-    hdr.innerHTML = `
-      <label class="tog-lbl">
-        <input type="checkbox" id="sday-chk-${dow}" ${day.open ? 'checked' : ''} />
-        <span style="font-size:14px;font-weight:500">${DAY_LABELS[dow]}</span>
-      </label>
-      <button class="btn-add-slot" id="sday-addbtn-${dow}" style="display:${day.open ? 'inline-block' : 'none'}">+ Añadir hora</button>
+    const activeCount = slots.size;
+    div.innerHTML = `
+      <div class="sday-hdr">
+        <label class="tog-lbl" style="cursor:pointer">
+          <input type="checkbox" id="sday-chk-${dow}" ${day.open ? 'checked' : ''} style="width:36px;height:20px;accent-color:var(--g6);cursor:pointer" />
+          <span style="font-size:14px;font-weight:500">${DAY_LABELS[dow]}</span>
+        </label>
+        <span style="font-size:12px;color:var(--t3)" id="sday-count-${dow}">${day.open ? activeCount + ' hora' + (activeCount!==1?'s':'') : 'Cerrado'}</span>
+      </div>
+      <div id="slots-wrap-${dow}" style="display:${day.open?'block':'none'};margin-top:.75rem">
+        <p style="font-size:11px;color:var(--t3);margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.06em;font-weight:500">Toca para activar / desactivar horarios</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          ${ALL_TIME_SLOTS.map(time => `<button type="button" class="time-chip${slots.has(time)?' active':''}" data-dow="${dow}" data-time="${time}" onclick="toggleChip(this)">${time}</button>`).join('')}
+        </div>
+      </div>
     `;
-    div.appendChild(hdr);
 
-    // Slots container
-    const slotsWrap = document.createElement('div');
-    slotsWrap.id = `slots-wrap-${dow}`;
-    slotsWrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;margin-top:.5rem';
-    if (!day.open) slotsWrap.style.display = 'none';
-
-    if (slots.length === 0 && day.open) {
-      slotsWrap.innerHTML = '<p style="font-size:13px;color:var(--t3);width:100%">Sin horas. Pulsa "+ Añadir hora".</p>';
-    } else {
-      slots.forEach((slot, i) => {
-        slotsWrap.appendChild(createSlotRow(dow, i, slot));
-      });
-    }
-    div.appendChild(slotsWrap);
-
-    // Wire up checkbox
-    hdr.querySelector(`#sday-chk-${dow}`).addEventListener('change', function() {
+    div.querySelector('#sday-chk-' + dow).addEventListener('change', function() {
       adminSchedule[dow].open = this.checked;
-      document.getElementById(`sday-addbtn-${dow}`).style.display = this.checked ? 'inline-block' : 'none';
-      document.getElementById(`slots-wrap-${dow}`).style.display = this.checked ? 'flex' : 'none';
-    });
-
-    // Wire up add button
-    hdr.querySelector(`#sday-addbtn-${dow}`).addEventListener('click', () => {
-      const newSlot = '09:00';
-      if (!Array.isArray(adminSchedule[dow].slots)) adminSchedule[dow].slots = [];
-      const idx = adminSchedule[dow].slots.length;
-      adminSchedule[dow].slots.push(newSlot);
-      // Remove "sin horas" placeholder if present
-      const wrap = document.getElementById(`slots-wrap-${dow}`);
-      wrap.querySelectorAll('p').forEach(p => p.remove());
-      wrap.appendChild(createSlotRow(dow, idx, newSlot));
+      document.getElementById('slots-wrap-' + dow).style.display = this.checked ? 'block' : 'none';
+      document.getElementById('sday-count-' + dow).textContent  = this.checked
+        ? (adminSchedule[dow].slots?.length||0) + ' hora' + ((adminSchedule[dow].slots?.length||0)!==1?'s':'')
+        : 'Cerrado';
     });
 
     container.appendChild(div);
   }
 }
 
-function createSlotRow(dow, i, value) {
-  const row = document.createElement('div');
-  row.className = 'slot-inp-row';
-  row.dataset.dow = dow;
-  row.dataset.idx = i;
-
-  const input = document.createElement('input');
-  input.type  = 'time';
-  input.value = value;
-  // On change: update state directly, NO re-render, NO sort
-  input.addEventListener('change', function() {
-    if (adminSchedule[dow] && Array.isArray(adminSchedule[dow].slots)) {
-      // Find actual index from current DOM position
-      const wrap    = document.getElementById(`slots-wrap-${dow}`);
-      const rows    = Array.from(wrap.querySelectorAll('.slot-inp-row'));
-      const domIdx  = rows.indexOf(row);
-      if (domIdx >= 0) adminSchedule[dow].slots[domIdx] = this.value;
-    }
-  });
-
-  const delBtn = document.createElement('button');
-  delBtn.className = 'btn-del-slot';
-  delBtn.title = 'Eliminar';
-  delBtn.textContent = '✕';
-  delBtn.addEventListener('click', () => {
-    // Find DOM index and remove from state
-    const wrap   = document.getElementById(`slots-wrap-${dow}`);
-    const rows   = Array.from(wrap.querySelectorAll('.slot-inp-row'));
-    const domIdx = rows.indexOf(row);
-    if (domIdx >= 0 && adminSchedule[dow].slots) {
-      adminSchedule[dow].slots.splice(domIdx, 1);
-    }
-    row.remove();
-    if (wrap.querySelectorAll('.slot-inp-row').length === 0) {
-      wrap.innerHTML = '<p style="font-size:13px;color:var(--t3);width:100%">Sin horas. Pulsa "+ Añadir hora".</p>';
-    }
-  });
-
-  row.appendChild(input);
-  row.appendChild(delBtn);
-  return row;
+function toggleChip(btn) {
+  const dow  = parseInt(btn.dataset.dow);
+  const time = btn.dataset.time;
+  if (!Array.isArray(adminSchedule[dow].slots)) adminSchedule[dow].slots = [];
+  if (btn.classList.contains('active')) {
+    adminSchedule[dow].slots = adminSchedule[dow].slots.filter(s => s !== time);
+    btn.classList.remove('active');
+  } else {
+    adminSchedule[dow].slots.push(time);
+    adminSchedule[dow].slots.sort();
+    btn.classList.add('active');
+  }
+  const n = adminSchedule[dow].slots.length;
+  const countEl = document.getElementById('sday-count-' + dow);
+  if (countEl) countEl.textContent = n + ' hora' + (n!==1?'s':'');
 }
+
+function createSlotRow()  {} // compat stub
+function toggleDay(dow, open) { adminSchedule[dow] = { ...adminSchedule[dow], open }; renderScheduleEditor(); }
+function addSlot()    {}
+function updateSlot() {}
+function deleteSlot() {}
 
 function toggleDay(dow, open) { adminSchedule[dow] = { ...adminSchedule[dow], open }; renderScheduleEditor(); }
 function addSlot(dow) { /* handled inline */ }

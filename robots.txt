@@ -1,6 +1,10 @@
 User-agent: *
-Allow: /
+Allow: /es/
+Allow: /en/
 Disallow: /admin.html
 Disallow: /cancel.html
+Disallow: /api/
+Disallow: /js/
+Disallow: /css/
 
 Sitemap: https://maritagalafate.com/sitemap.xml
