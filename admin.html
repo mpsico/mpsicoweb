@@ -374,6 +374,31 @@
       <div class="a-card"><div class="a-card-body"><div id="adm-cal"></div></div></div>
     </div>
 
+
+    <!-- BLOG -->
+    <div id="tab-blog" class="tab-content">
+      <div class="pg-hdr">
+        <div><h2>Blog</h2><p>Gestiona las publicaciones del blog</p></div>
+        <button class="btn btn-p" onclick="openPostModal()">+ Nueva publicación</button>
+      </div>
+      <div class="a-card">
+        <div class="a-card-hdr">
+          <div class="f-bar" style="margin:0">
+            <button class="f-tab active" onclick="setBlogFilter(this,'all')">Todas</button>
+            <button class="f-tab" onclick="setBlogFilter(this,'published')">Publicadas</button>
+            <button class="f-tab" onclick="setBlogFilter(this,'draft')">Borradores</button>
+          </div>
+          <input class="s-inp" id="blog-search" placeholder="Buscar..." oninput="renderBlog()" style="max-width:200px" />
+        </div>
+        <div style="overflow-x:auto">
+          <table class="dtbl">
+            <thead><tr><th>Título</th><th>Etiquetas</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+            <tbody id="blog-body"><tr><td colspan="5" class="no-data">Cargando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -382,6 +407,51 @@
 <div id="pat-modal" class="m-ov"><div class="m-box" style="max-width:560px"><div class="m-hdr"><h3 id="pat-m-title">Paciente</h3><button class="m-close" onclick="closeModal('pat-modal')">✕</button></div><div class="m-body" id="pat-m-body"></div></div></div>
 <div id="sp-modal" class="m-ov"><div class="m-box"><div class="m-hdr"><h3>Día especial</h3><button class="m-close" onclick="closeModal('sp-modal')">✕</button></div><div class="m-body"><p style="font-size:14px;font-weight:500;color:var(--g7);margin-bottom:1.1rem" id="sp-date-disp"></p><input type="hidden" id="sp-date" /><div class="mfg"><label>Estado</label><select id="sp-open" onchange="toggleSpSlots()"><option value="open">Abierto (horario personalizado)</option><option value="closed">Cerrado</option></select></div><div class="mfg" id="sp-slots-wrap"><label>Horarios (uno por línea HH:MM)</label><textarea id="sp-slots" placeholder="09:00&#10;10:00"></textarea></div><div class="mfg"><label>Etiqueta (opcional)</label><input type="text" id="sp-label" placeholder="Festivo, Vacaciones..." /></div></div><div class="m-foot"><button class="btn btn-s" onclick="closeModal('sp-modal')">Cancelar</button><button class="btn btn-p" onclick="saveSpecialDay()">Guardar</button></div></div></div>
 <div id="confirm-modal" class="m-ov"><div class="m-box" style="max-width:380px"><div class="m-hdr"><h3 id="cfm-title">Confirmar</h3><button class="m-close" onclick="closeModal('confirm-modal')">✕</button></div><div class="m-body"><p id="cfm-text" style="font-size:14px;color:var(--t2);line-height:1.6"></p></div><div class="m-foot"><button class="btn btn-s" onclick="closeModal('confirm-modal')">Cancelar</button><button class="btn btn-d" id="cfm-btn">Confirmar</button></div></div></div>
+
+<!-- Post editor modal -->
+<div id="post-modal" class="m-ov">
+  <div class="m-box" style="max-width:640px">
+    <div class="m-hdr"><h3 id="post-m-title">Nueva publicación</h3><button class="m-close" onclick="closeModal('post-modal')">✕</button></div>
+    <div class="m-body" style="display:flex;flex-direction:column;gap:.875rem">
+      <input type="hidden" id="pm-id" />
+      <div class="mfg"><label>Título *</label><input type="text" id="pm-title" placeholder="Título de la publicación" /></div>
+      <div class="mfg"><label>Extracto (resumen corto)</label><textarea id="pm-excerpt" rows="2" placeholder="Breve descripción que se muestra en el listado..."></textarea></div>
+      <div class="mfg">
+        <label>Contenido (HTML)</label>
+        <div style="display:flex;gap:6px;margin-bottom:5px;flex-wrap:wrap">
+          <button type="button" class="bsm" onclick="insertHtml('&lt;h2&gt;Título&lt;/h2&gt;')"><b>H2</b></button>
+          <button type="button" class="bsm" onclick="insertHtml('&lt;p&gt;Párrafo&lt;/p&gt;')">P</button>
+          <button type="button" class="bsm" onclick="insertHtml('&lt;strong&gt;negrita&lt;/strong&gt;')"><b>B</b></button>
+          <button type="button" class="bsm" onclick="insertHtml('&lt;em&gt;cursiva&lt;/em&gt;')"><em>I</em></button>
+          <button type="button" class="bsm" onclick="insertHtml('&lt;ul&gt;\n  &lt;li&gt;Item&lt;/li&gt;\n&lt;/ul&gt;')">Lista</button>
+          <button type="button" class="bsm" onclick="insertHtml('&lt;blockquote&gt;Cita&lt;/blockquote&gt;')">Cita</button>
+        </div>
+        <textarea id="pm-content" rows="10" placeholder="Contenido completo en HTML..."></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+        <div class="mfg" style="margin:0"><label>URL imagen destacada</label><input type="url" id="pm-image" placeholder="https://..." /></div>
+        <div class="mfg" style="margin:0"><label>URL vídeo (YouTube)</label><input type="url" id="pm-video" placeholder="https://youtube.com/watch?v=..." /></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+        <div class="mfg" style="margin:0"><label>Emoji (portada sin imagen)</label><input type="text" id="pm-emoji" placeholder="🧠" maxlength="2" /></div>
+        <div class="mfg" style="margin:0"><label>Tiempo de lectura (min)</label><input type="number" id="pm-readtime" placeholder="5" min="1" max="60" /></div>
+      </div>
+      <div class="mfg"><label>Etiquetas (separadas por coma)</label><input type="text" id="pm-tags" placeholder="Ansiedad, Depresión, Bienestar..." /></div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px">
+          <input type="checkbox" id="pm-published" style="width:18px;height:18px;accent-color:var(--g7)" />
+          Publicar (visible en el blog)
+        </label>
+      </div>
+    </div>
+    <div class="m-foot">
+      <button class="btn btn-s" onclick="closeModal('post-modal')">Cancelar</button>
+      <button class="btn btn-s" onclick="savePost(false)">Guardar borrador</button>
+      <button class="btn btn-p" onclick="savePost(true)">Publicar</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast" class="toast"></div>
 
 <!-- Mobile bottom nav -->
@@ -389,23 +459,23 @@
   <div class="mob-nav-inner">
     <button class="mob-nav-btn active" onclick="showTab('dashboard');setMobActive(this)">
       <svg class="mob-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg>
-      <span>Dashboard</span>
+      <span>Inicio</span>
     </button>
     <button class="mob-nav-btn" onclick="showTab('bookings');setMobActive(this)">
       <svg class="mob-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><rect x="3" y="4" width="14" height="14" rx="2"/><path d="M7 2v4M13 2v4M3 9h14"/></svg>
-      <span>Reservas</span>
+      <span>Citas</span>
     </button>
     <button class="mob-nav-btn" onclick="showTab('patients');setMobActive(this)">
       <svg class="mob-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><circle cx="8" cy="6" r="3"/><path d="M2 17c0-3.314 2.686-6 6-6s6 2.686 6 6"/><circle cx="15" cy="7" r="2"/><path d="M18 17c0-2.21-1.343-4-3-4"/></svg>
       <span>Pacientes</span>
     </button>
+    <button class="mob-nav-btn" onclick="showTab('blog');setMobActive(this)">
+      <svg class="mob-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><path d="M4 5h12M4 9h12M4 13h7"/><circle cx="16" cy="14" r="3"/><path d="M16 12.5v1.5"/></svg>
+      <span>Blog</span>
+    </button>
     <button class="mob-nav-btn" onclick="showTab('schedule');setMobActive(this)">
       <svg class="mob-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 3"/></svg>
-      <span>Horarios</span>
-    </button>
-    <button class="mob-nav-btn" onclick="showTab('specialdays');setMobActive(this)">
-      <svg class="mob-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><rect x="3" y="4" width="14" height="14" rx="2"/><path d="M7 2v4M13 2v4M3 9h14M7 13h.01M10 13h.01M13 13h.01"/></svg>
-      <span>Días</span>
+      <span>Config</span>
     </button>
   </div>
 </nav>

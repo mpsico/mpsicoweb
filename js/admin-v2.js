@@ -218,7 +218,8 @@ async function showPanel(user) {
   document.getElementById('dash-date').textContent = now.toLocaleDateString('es-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
   await Promise.all([loadSchedule(), loadSpecialDays()]);
-  loadAllBookings(); // real-time listener
+  loadAllBookings();
+  loadBlog(); // real-time listener
 }
 
 function adminLogout() {
@@ -240,6 +241,7 @@ function showTab(tab) {
   if (tab === 'patients')    renderPatients();
   if (tab === 'schedule')    renderScheduleEditor();
   if (tab === 'specialdays') renderAdminCal();
+  if (tab === 'blog')        renderBlog();
 }
 
 function setMobActive(btn) {
@@ -437,7 +439,7 @@ async function doCancelBooking(date, slotId) {
       type: 'booking_cancel',
       data: {
         clientName: b.clientName, clientEmail: b.clientEmail,
-        date: fmtDateLong(date, b.lang || 'es'), time: b.time,
+        date: fmtDateLong(date, b.lang || 'es'), rawDate: date, time: b.time,
         lang: b.lang || 'es', bookingId: slotId,
         bookingUrl: `${window.location.origin}/es/#reservar`,
         adminLink: `${window.location.origin}/admin.html`
@@ -780,4 +782,152 @@ function fmtDateLong(dateStr, lang = 'es') {
   if (!dateStr) return '—';
   const [y,m,d] = dateStr.split('-').map(Number);
   return new Date(y,m-1,d).toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+}
+
+// ─── BLOG ─────────────────────────────────────────────────────────────────────
+let allBlogPosts = [];
+let blogFilter   = 'all';
+
+function loadBlog() {
+  db.ref('blog/posts').orderByChild('publishedAt').on('value', snap => {
+    allBlogPosts = [];
+    snap.forEach(child => allBlogPosts.unshift({ id: child.key, ...child.val() }));
+    renderBlog();
+  });
+}
+
+function renderBlog() {
+  const search = (document.getElementById('blog-search')?.value || '').toLowerCase();
+  let posts = allBlogPosts.filter(p => {
+    if (blogFilter === 'published') return p.published;
+    if (blogFilter === 'draft')     return !p.published;
+    return true;
+  }).filter(p => !search || p.title?.toLowerCase().includes(search));
+
+  const tbody = document.getElementById('blog-body');
+  if (!tbody) return;
+  if (!posts.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="no-data">No hay publicaciones.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = posts.map(p => {
+    const tags    = (p.tags || []).join(', ') || '—';
+    const date    = p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('es-ES') : '—';
+    const status  = p.published
+      ? '<span class="bdg bdg-g">Publicado</span>'
+      : '<span class="bdg bdg-y">Borrador</span>';
+    const title   = (p.title || '').substring(0, 50) + ((p.title||'').length > 50 ? '…' : '');
+    return `<tr>
+      <td><strong>${title}</strong>${p.imageUrl?'<br><span style="font-size:11px;color:var(--t3)">📷 Con imagen</span>':''}${p.videoUrl?'<br><span style="font-size:11px;color:var(--t3)">▶ Con vídeo</span>':''}</td>
+      <td style="font-size:12px;color:var(--t3)">${tags}</td>
+      <td>${status}</td>
+      <td style="font-size:12px;white-space:nowrap">${date}</td>
+      <td><div style="display:flex;gap:4px;flex-wrap:wrap">
+        <button class="bsm" onclick="editPost('${p.id}')">Editar</button>
+        <button class="bsm" onclick="togglePublish('${p.id}',${!p.published})">${p.published?'Despublicar':'Publicar'}</button>
+        <button class="bsm rd" onclick="deletePost('${p.id}')">Borrar</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function setBlogFilter(btn, filter) {
+  document.querySelectorAll('.f-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  blogFilter = filter;
+  renderBlog();
+}
+
+function openPostModal(id = null) {
+  clearPostForm();
+  document.getElementById('pm-id').value       = '';
+  document.getElementById('post-m-title').textContent = 'Nueva publicación';
+  if (id) {
+    const p = allBlogPosts.find(x => x.id === id);
+    if (!p) return;
+    document.getElementById('post-m-title').textContent = 'Editar publicación';
+    document.getElementById('pm-id').value       = id;
+    document.getElementById('pm-title').value    = p.title || '';
+    document.getElementById('pm-excerpt').value  = p.excerpt || '';
+    document.getElementById('pm-content').value  = p.content || '';
+    document.getElementById('pm-image').value    = p.imageUrl || '';
+    document.getElementById('pm-video').value    = p.videoUrl || '';
+    document.getElementById('pm-emoji').value    = p.emoji || '';
+    document.getElementById('pm-readtime').value = p.readTime || '';
+    document.getElementById('pm-tags').value     = (p.tags || []).join(', ');
+    document.getElementById('pm-published').checked = !!p.published;
+  }
+  openModal('post-modal');
+  setTimeout(() => document.getElementById('pm-title').focus(), 100);
+}
+
+function editPost(id) { openPostModal(id); }
+
+function clearPostForm() {
+  ['pm-title','pm-excerpt','pm-content','pm-image','pm-video','pm-emoji','pm-readtime','pm-tags'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const chk = document.getElementById('pm-published');
+  if (chk) chk.checked = false;
+}
+
+async function savePost(publish) {
+  const id      = document.getElementById('pm-id').value.trim();
+  const title   = document.getElementById('pm-title').value.trim();
+  if (!title) { showToast('El título es obligatorio', 'er'); return; }
+
+  const tagsRaw = document.getElementById('pm-tags').value;
+  const tags    = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+  const isPublished = publish || document.getElementById('pm-published').checked;
+
+  const data = {
+    title,
+    excerpt:     document.getElementById('pm-excerpt').value.trim(),
+    content:     document.getElementById('pm-content').value.trim(),
+    imageUrl:    document.getElementById('pm-image').value.trim() || null,
+    videoUrl:    document.getElementById('pm-video').value.trim() || null,
+    emoji:       document.getElementById('pm-emoji').value.trim() || '🧠',
+    readTime:    parseInt(document.getElementById('pm-readtime').value) || null,
+    tags,
+    published:   isPublished,
+    updatedAt:   Date.now(),
+  };
+
+  if (!id) data.publishedAt = Date.now(); // new post
+
+  if (id) {
+    await db.ref(`blog/posts/${id}`).update(data);
+    showToast('Publicación actualizada ✓', 'ok');
+  } else {
+    await db.ref('blog/posts').push(data);
+    showToast(isPublished ? 'Publicación publicada ✓' : 'Borrador guardado ✓', 'ok');
+  }
+  closeModal('post-modal');
+}
+
+async function togglePublish(id, publish) {
+  await db.ref(`blog/posts/${id}`).update({ published: publish, updatedAt: Date.now() });
+  showToast(publish ? 'Publicado ✓' : 'Despublicado', 'info');
+}
+
+async function deletePost(id) {
+  const p = allBlogPosts.find(x => x.id === id);
+  document.getElementById('cfm-title').textContent = 'Borrar publicación';
+  document.getElementById('cfm-text').textContent  = `¿Borrar "${p?.title}"? Esta acción no se puede deshacer.`;
+  document.getElementById('cfm-btn').onclick = async () => {
+    await db.ref(`blog/posts/${id}`).remove();
+    closeModal('confirm-modal');
+    showToast('Publicación borrada', 'info');
+  };
+  openModal('confirm-modal');
+}
+
+function insertHtml(snippet) {
+  const ta  = document.getElementById('pm-content');
+  const pos = ta.selectionStart;
+  ta.value  = ta.value.slice(0, pos) + snippet + ta.value.slice(ta.selectionEnd);
+  ta.setSelectionRange(pos + snippet.length, pos + snippet.length);
+  ta.focus();
 }

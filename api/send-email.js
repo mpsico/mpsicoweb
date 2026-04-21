@@ -98,14 +98,24 @@ function pemToDer(pem) {
 }
 
 function buildCalEvent(d) {
-  const [y,m,day] = d.date.split('-').map(Number);
-  const [h, min]  = d.time.split(':').map(Number);
-  const start = new Date(y, m-1, day, h, min);
-  const end   = new Date(y, m-1, day, h+1, min);
+  // d.rawDate = 'YYYY-MM-DD', d.time = 'HH:MM'
+  const dateStr = d.rawDate || d.date; // fallback
+  const [y, m, day] = dateStr.split('-').map(Number);
+  const [h, min]    = (d.time || '09:00').split(':').map(Number);
+
+  // Build ISO strings in Madrid timezone (Europe/Madrid = UTC+1 winter, UTC+2 summer)
+  // Use Intl to get correct UTC offset for the specific date
+  const localDt  = new Date(y, m - 1, day, h, min, 0);
+  const madridStr = localDt.toLocaleString('sv-SE', { timeZone: 'Europe/Madrid' });
+  const utcStr    = localDt.toLocaleString('sv-SE', { timeZone: 'UTC' });
+  const offsetMs  = new Date(madridStr) - new Date(utcStr);
+  const startUTC  = new Date(localDt.getTime() - offsetMs);
+  const endUTC    = new Date(startUTC.getTime() + 60 * 60 * 1000);
+
   const toISO = dt => dt.toISOString();
 
   return {
-    summary: `🗓 ${d.modality === 'online' ? '🌐' : '📍'} ${d.clientName} — Consulta psicológica`,
+    summary: `${d.modality === 'online' ? '🌐' : '📍'} ${d.clientName} — Consulta psicológica`,
     description: [
       `Paciente: ${d.clientName}`,
       `Email: ${d.clientEmail}`,
@@ -114,12 +124,11 @@ function buildCalEvent(d) {
       d.reason ? `Motivo: ${d.reason}` : '',
       `ID reserva: ${d.bookingId}`,
     ].filter(Boolean).join('\n'),
-    start: { dateTime: toISO(start), timeZone: 'Europe/Madrid' },
-    end:   { dateTime: toISO(end),   timeZone: 'Europe/Madrid' },
+    start: { dateTime: toISO(startUTC), timeZone: 'Europe/Madrid' },
+    end:   { dateTime: toISO(endUTC),   timeZone: 'Europe/Madrid' },
     location: d.modality === 'presencial' ? 'Av. Alcalde Álvaro Domecq 18, 2ºA, Jerez de la Frontera' : 'Online (Zoom/Skype)',
-    attendees: [{ email: d.clientEmail, displayName: d.clientName }],
     reminders: { useDefault: false, overrides: [{ method: 'email', minutes: 1440 }, { method: 'popup', minutes: 30 }] },
-    extendedProperties: { private: { bookingId: d.bookingId } }
+    extendedProperties: { private: { bookingId: String(d.bookingId) } }
   };
 }
 

@@ -314,6 +314,7 @@ async function handleBookingSubmit(e) {
           clientPhone:    phone,
           reason:         reason,
           date:           formatDateLong(selectedDate, lang),
+          rawDate:        selectedDate,
           time:           selectedSlot,
           modality:       selectedModality,
           lang:           lang,

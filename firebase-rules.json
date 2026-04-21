@@ -1,0 +1,30 @@
+{
+  "rules": {
+    "bookings": {
+      ".read": true,
+      ".write": true
+    },
+    "schedule": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "specialDays": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "clients": {
+      ".read": "auth != null",
+      ".write": true
+    },
+    "contacts": {
+      ".read": "auth != null",
+      ".write": true
+    },
+    "blog": {
+      "posts": {
+        ".read": true,
+        ".write": "auth != null"
+      }
+    }
+  }
+}

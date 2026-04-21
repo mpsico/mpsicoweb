@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog · Marita Galafate Psicóloga</title>
+  <meta name="description" content="Artículos sobre psicología, bienestar emocional, ansiedad, depresión y más. Por Marita Galafate, Psicóloga General Sanitaria en Jerez de la Frontera." />
+  <link rel="canonical" href="https://blog.maritagalafate.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --g9: #04342C; --g7: #0F6E56; --g6: #1D9E75; --g1: #E1F5EE; --g0: #F0FBF7;
+      --text: #1a1a1a; --text2: #555; --text3: #888; --muted: #aaa;
+      --bg: #f8faf5; --card: #fff; --border: rgba(0,0,0,.08);
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --r: 12px; --r2: 16px;
+      --sh: 0 2px 16px rgba(0,0,0,.06);
+    }
+    body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    img { max-width: 100%; display: block; }
+
+    /* NAV */
+    nav {
+      background: #fff; border-bottom: .5px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      padding: 0 1.5rem; height: 62px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; }
+    .nav-logo svg { display: block; }
+    .nav-back { font-size: 13px; color: var(--g7); display: flex; align-items: center; gap: 5px; }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-cta { background: var(--g7); color: #fff; font-size: 13px; font-weight: 500; padding: 9px 18px; border-radius: 100px; transition: background .15s; }
+    .nav-cta:hover { background: var(--g9); }
+
+    /* HERO */
+    .blog-hero {
+      background: linear-gradient(135deg, var(--g9) 0%, var(--g7) 100%);
+      padding: 60px 1.5rem 50px;
+      text-align: center;
+    }
+    .blog-hero h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 42px); font-weight: 400; color: #fff; margin-bottom: .75rem; }
+    .blog-hero p { font-size: 15px; color: rgba(255,255,255,.65); max-width: 480px; margin: 0 auto 1.5rem; line-height: 1.7; }
+
+    /* SEARCH + FILTERS */
+    .blog-controls {
+      max-width: 860px; margin: -22px auto 0; padding: 0 1.5rem;
+      display: flex; gap: .75rem; flex-wrap: wrap; align-items: center;
+    }
+    .blog-search {
+      flex: 1; min-width: 200px;
+      background: #fff; border: .5px solid var(--border);
+      border-radius: 100px; padding: 11px 18px;
+      font-size: 14px; font-family: var(--sans);
+      outline: none; box-shadow: var(--sh);
+    }
+    .blog-search:focus { border-color: var(--g6); }
+    .tag-filter {
+      display: flex; gap: 6px; flex-wrap: wrap;
+    }
+    .tag-pill {
+      font-size: 12px; font-weight: 500; padding: 6px 14px;
+      border-radius: 100px; border: 1px solid var(--border);
+      background: #fff; color: var(--text2); cursor: pointer;
+      transition: all .15s; box-shadow: var(--sh);
+    }
+    .tag-pill.active, .tag-pill:hover { background: var(--g7); color: #fff; border-color: var(--g7); }
+
+    /* GRID */
+    .blog-main { max-width: 860px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+    .posts-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.25rem;
+    }
+    .post-card {
+      background: var(--card); border-radius: var(--r2);
+      border: .5px solid var(--border); box-shadow: var(--sh);
+      overflow: hidden; transition: transform .2s, box-shadow .2s;
+      cursor: pointer;
+    }
+    .post-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,.1); }
+    .post-thumb {
+      width: 100%; height: 180px; object-fit: cover;
+      background: var(--g1);
+    }
+    .post-thumb-placeholder {
+      width: 100%; height: 180px;
+      background: linear-gradient(135deg, var(--g1), var(--g0));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+    }
+    .post-card-body { padding: 1.1rem; }
+    .post-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: .6rem; }
+    .post-tag { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; padding: 3px 9px; border-radius: 100px; background: var(--g1); color: var(--g7); }
+    .post-title { font-family: var(--serif); font-size: 17px; font-weight: 600; line-height: 1.35; margin-bottom: .4rem; color: var(--text); }
+    .post-excerpt { font-size: 13px; color: var(--text3); line-height: 1.65; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: .75rem; }
+    .post-meta { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--muted); }
+    .post-date { }
+    .post-read { color: var(--g7); font-weight: 500; }
+
+    /* FEATURED POST */
+    .post-card.featured {
+      grid-column: 1 / -1;
+      display: grid; grid-template-columns: 1fr 1fr;
+    }
+    .post-card.featured .post-thumb { height: 100%; min-height: 220px; }
+    .post-card.featured .post-title { font-size: 22px; }
+    .post-card.featured .post-excerpt { -webkit-line-clamp: 4; }
+
+    /* SINGLE POST */
+    #single-post { display: none; }
+    .post-full {
+      max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem;
+    }
+    .post-full-back { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--g7); margin-bottom: 1.5rem; cursor: pointer; }
+    .post-full-back:hover { text-decoration: underline; }
+    .post-full-tags { display: flex; gap: 6px; margin-bottom: 1rem; }
+    .post-full-title { font-family: var(--serif); font-size: clamp(24px, 4vw, 36px); font-weight: 600; line-height: 1.25; color: var(--g9); margin-bottom: .75rem; }
+    .post-full-meta { font-size: 13px; color: var(--muted); margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: .5px solid var(--border); }
+    .post-full-image { width: 100%; border-radius: var(--r2); overflow: hidden; margin-bottom: 2rem; }
+    .post-full-image img { width: 100%; max-height: 420px; object-fit: cover; }
+    .post-full-video { border-radius: var(--r2); overflow: hidden; margin-bottom: 2rem; aspect-ratio: 16/9; }
+    .post-full-video iframe { width: 100%; height: 100%; border: none; }
+    .post-full-content { font-size: 15px; line-height: 1.85; color: #333; }
+    .post-full-content h2 { font-family: var(--serif); font-size: 22px; font-weight: 600; margin: 2rem 0 .75rem; color: var(--g9); }
+    .post-full-content h3 { font-size: 17px; font-weight: 500; margin: 1.5rem 0 .5rem; }
+    .post-full-content p { margin-bottom: 1.25rem; }
+    .post-full-content ul, .post-full-content ol { padding-left: 1.5rem; margin-bottom: 1.25rem; }
+    .post-full-content li { margin-bottom: .4rem; }
+    .post-full-content blockquote { border-left: 3px solid var(--g6); padding: .75rem 1.25rem; background: var(--g0); border-radius: 0 var(--r) var(--r) 0; margin: 1.5rem 0; font-style: italic; color: var(--text2); }
+
+    /* EMPTY */
+    .empty-state { text-align: center; padding: 4rem 1rem; color: var(--text3); }
+    .empty-state p { font-size: 14px; margin-top: .5rem; }
+
+    /* FOOTER */
+    footer { background: var(--g9); color: rgba(255,255,255,.55); padding: 2rem 1.5rem; text-align: center; }
+    footer p { font-size: 12px; line-height: 1.7; }
+    footer a { color: rgba(255,255,255,.7); }
+
+    /* LOADER */
+    .loader { display: flex; justify-content: center; padding: 3rem; }
+    .spin { width: 32px; height: 32px; border: 3px solid var(--g1); border-top-color: var(--g7); border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 600px) {
+      .post-card.featured { grid-template-columns: 1fr; }
+      .post-card.featured .post-thumb { height: 200px; }
+      nav { padding: 0 1rem; }
+      .blog-controls { margin-top: -16px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="https://maritagalafate.com/es/">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 36" fill="none" height="30">
+      <g transform="translate(0,2)"><path d="M3 26 L3 5 L10 17 L17 5 L17 26" stroke="#0F6E56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M30 10 C27 7 21 7 21 15 C21 23 27 23 30 21 L30 15 L26 15" stroke="#0F6E56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+      <line x1="38" y1="6" x2="38" y2="30" stroke="#0F6E56" stroke-width="0.6" stroke-opacity="0.3"/>
+      <text x="44" y="16" font-family="Georgia,serif" font-size="10" letter-spacing="1.8" fill="#04342C">MARITA GALAFATE</text>
+      <text x="44.5" y="26" font-family="Arial,sans-serif" font-size="6" letter-spacing="2.2" fill="#1D9E75">PSICÓLOGA SANITARIA</text>
+    </svg>
+  </a>
+  <div style="display:flex;align-items:center;gap:1rem">
+    <a href="https://maritagalafate.com/es/" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Volver a la web
+    </a>
+    <a href="https://maritagalafate.com/es/#reservar" class="nav-cta">Reservar cita</a>
+  </div>
+</nav>
+
+<!-- LIST VIEW -->
+<div id="list-view">
+  <div class="blog-hero">
+    <h1>Blog de psicología</h1>
+    <p>Reflexiones, recursos y herramientas para tu bienestar emocional</p>
+  </div>
+
+  <div class="blog-controls">
+    <input class="blog-search" type="search" id="search-input" placeholder="Buscar artículos..." oninput="filterPosts()" />
+    <div class="tag-filter" id="tag-filter"></div>
+  </div>
+
+  <main class="blog-main">
+    <div class="loader" id="loader"><div class="spin"></div></div>
+    <div class="posts-grid" id="posts-grid" style="display:none"></div>
+    <div class="empty-state" id="empty-state" style="display:none">
+      <div style="font-size:36px">🔍</div>
+      <p>No se encontraron artículos.</p>
+    </div>
+  </main>
+</div>
+
+<!-- SINGLE POST VIEW -->
+<div id="single-post">
+  <div class="post-full" id="post-content"></div>
+</div>
+
+<footer>
+  <p><strong style="color:rgba(255,255,255,.8)">Marita Galafate Domínguez</strong> · Psicóloga General Sanitaria<br>
+  <a href="https://maritagalafate.com/es/">maritagalafate.com</a> · <a href="tel:+34697911679">+34 697 911 679</a></p>
+  <p style="margin-top:.5rem">© 2026 · <a href="https://maritagalafate.com/es/legal/privacidad.html">Privacidad</a></p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="../firebase-config.js"></script>
+<script>
+// ─── State ────────────────────────────────────────────────────────────────────
+let allPosts = [];
+let activeTag = 'all';
+
+const MONTHS = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+db.ref('blog/posts').orderByChild('publishedAt').on('value', snap => {
+  allPosts = [];
+  snap.forEach(child => {
+    const post = child.val();
+    if (post.published) allPosts.unshift({ id: child.key, ...post });
+  });
+  renderTagFilters();
+  renderPosts();
+  document.getElementById('loader').style.display = 'none';
+  document.getElementById('posts-grid').style.display = 'grid';
+});
+
+// ─── Render tag filters ───────────────────────────────────────────────────────
+function renderTagFilters() {
+  const allTags = new Set();
+  allPosts.forEach(p => (p.tags || []).forEach(t => allTags.add(t)));
+  const tagFilter = document.getElementById('tag-filter');
+  tagFilter.innerHTML = `<button class="tag-pill${activeTag==='all'?' active':''}" onclick="setTag('all')">Todos</button>` +
+    [...allTags].map(t => `<button class="tag-pill${activeTag===t?' active':''}" onclick="setTag('${t}')">${t}</button>`).join('');
+}
+
+function setTag(tag) {
+  activeTag = tag;
+  renderTagFilters();
+  renderPosts();
+}
+
+// ─── Render posts ─────────────────────────────────────────────────────────────
+function filterPosts() { renderPosts(); }
+
+function renderPosts() {
+  const search  = document.getElementById('search-input').value.toLowerCase();
+  let filtered  = allPosts.filter(p => {
+    const matchTag  = activeTag === 'all' || (p.tags || []).includes(activeTag);
+    const matchSearch = !search || p.title.toLowerCase().includes(search) || (p.excerpt || '').toLowerCase().includes(search);
+    return matchTag && matchSearch;
+  });
+
+  const grid  = document.getElementById('posts-grid');
+  const empty = document.getElementById('empty-state');
+
+  if (!filtered.length) {
+    grid.style.display  = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  grid.style.display  = 'grid';
+  empty.style.display = 'none';
+
+  grid.innerHTML = filtered.map((p, i) => {
+    const isFeatured = i === 0 && !search && activeTag === 'all';
+    const tags = (p.tags || []).map(t => `<span class="post-tag">${t}</span>`).join('');
+    const date = p.publishedAt ? fmtDate(p.publishedAt) : '';
+    const thumb = p.imageUrl
+      ? `<img class="post-thumb" src="${escHtml(p.imageUrl)}" alt="${escHtml(p.title)}" loading="lazy" />`
+      : `<div class="post-thumb-placeholder">${p.emoji || '🧠'}</div>`;
+
+    return `<div class="post-card${isFeatured?' featured':''}" onclick="openPost('${p.id}')">
+      ${thumb}
+      <div class="post-card-body">
+        <div class="post-tags">${tags}</div>
+        <div class="post-title">${escHtml(p.title)}</div>
+        <div class="post-excerpt">${escHtml(p.excerpt || '')}</div>
+        <div class="post-meta"><span class="post-date">${date}</span><span class="post-read">Leer →</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── Single post ──────────────────────────────────────────────────────────────
+function openPost(id) {
+  const post = allPosts.find(p => p.id === id);
+  if (!post) return;
+
+  window.scrollTo(0, 0);
+  history.pushState({ postId: id }, '', `?post=${id}`);
+
+  const tags = (post.tags || []).map(t => `<span class="post-tag">${t}</span>`).join('');
+  const date = post.publishedAt ? fmtDate(post.publishedAt) : '';
+
+  let mediaHtml = '';
+  if (post.videoUrl) {
+    const embedUrl = ytEmbed(post.videoUrl);
+    mediaHtml = `<div class="post-full-video"><iframe src="${embedUrl}" allowfullscreen></iframe></div>`;
+  } else if (post.imageUrl) {
+    mediaHtml = `<div class="post-full-image"><img src="${escHtml(post.imageUrl)}" alt="${escHtml(post.title)}" /></div>`;
+  }
+
+  document.getElementById('post-content').innerHTML = `
+    <button class="post-full-back" onclick="closePost()">← Volver al blog</button>
+    <div class="post-full-tags">${tags}</div>
+    <h1 class="post-full-title">${escHtml(post.title)}</h1>
+    <p class="post-full-meta">${date}${post.readTime ? ' · ' + post.readTime + ' min de lectura' : ''}</p>
+    ${mediaHtml}
+    <div class="post-full-content">${post.content || ''}</div>
+  `;
+
+  document.getElementById('list-view').style.display   = 'none';
+  document.getElementById('single-post').style.display = 'block';
+
+  // Update page title
+  document.title = `${post.title} · Blog de Marita Galafate`;
+}
+
+function closePost() {
+  document.getElementById('single-post').style.display = 'none';
+  document.getElementById('list-view').style.display   = 'block';
+  history.pushState({}, '', window.location.pathname);
+  document.title = 'Blog · Marita Galafate Psicóloga';
+  window.scrollTo(0, 0);
+}
+
+// Handle browser back
+window.addEventListener('popstate', () => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('post')) openPost(params.get('post'));
+  else closePost();
+});
+
+// Check initial URL
+const initParams = new URLSearchParams(window.location.search);
+if (initParams.get('post')) {
+  db.ref(`blog/posts/${initParams.get('post')}`).once('value', snap => {
+    if (snap.val()) openPost(initParams.get('post'));
+  });
+}
+
+// ─── Utils ────────────────────────────────────────────────────────────────────
+function fmtDate(ts) {
+  const d = new Date(ts);
+  return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function ytEmbed(url) {
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/);
+  return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+}
+</script>
+</body>
+</html>
