@@ -523,3 +523,70 @@
     </div>
   </div>
 </div>
+
+>
+<div id="toast" class="toast"></div>
+
+<!-- Mobile bottom nav -->
+<nav class="mob-nav" id="mob-nav" style="display:none">
+  <div class="mob-nav-inner">
+    <button class="mob-nav-btn active" onclick="showTab('dashboard');setMobActive(this)" data-mob-tab="dashboard">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg>
+      <span>Dashboard</span>
+    </button>
+    <button class="mob-nav-btn" onclick="showTab('bookings');setMobActive(this)" data-mob-tab="bookings">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><rect x="3" y="4" width="14" height="14" rx="2"/><path d="M7 2v4M13 2v4M3 9h14"/></svg>
+      <span>Reservas</span>
+    </button>
+    <button class="mob-nav-btn" onclick="showTab('patients');setMobActive(this)" data-mob-tab="patients">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><circle cx="8" cy="6" r="3"/><path d="M2 17c0-3.314 2.686-6 6-6s6 2.686 6 6"/><circle cx="15" cy="7" r="2"/><path d="M18 17c0-2.21-1.343-4-3-4"/></svg>
+      <span>Pacientes</span>
+    </button>
+    <button class="mob-nav-btn" onclick="showTab('blog');setMobActive(this)" data-mob-tab="blog">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M4 5h12M4 9h12M4 13h7"/><circle cx="16" cy="14" r="3"/></svg>
+      <span>Blog</span>
+    </button>
+    <button class="mob-nav-btn" onclick="showTab('schedule');setMobActive(this)" data-mob-tab="schedule">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 3"/></svg>
+      <span>Horarios</span>
+    </button>
+  </div>
+</nav>
+
+<!-- Critical login functions — must load BEFORE Firebase and admin-v2.js -->
+<script>
+function showStep(step) {
+  ['login','2fa','reset'].forEach(function(s) {
+    var el = document.getElementById('step-' + s);
+    if (el) el.style.display = (s === step) ? 'block' : 'none';
+  });
+}
+function sendPwdReset() {
+  var email = document.getElementById('reset-email').value.trim();
+  var errEl = document.getElementById('reset-err');
+  var okEl  = document.getElementById('reset-ok');
+  if (errEl) errEl.style.display = 'none';
+  if (!window.auth) {
+    if (errEl) { errEl.textContent = 'Cargando... inténtalo de nuevo.'; errEl.style.display = 'block'; }
+    return;
+  }
+  auth.sendPasswordResetEmail(email)
+    .then(function() { if (okEl) okEl.style.display = 'block'; })
+    .catch(function() {
+      if (errEl) { errEl.textContent = 'Error al enviar. Verifica el email.'; errEl.style.display = 'block'; }
+    });
+}
+function resendOtp() {
+  if (typeof send2FACode === 'function' && window._pendingEmail) {
+    send2FACode(window._pendingEmail);
+  }
+}
+</script>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="js/admin-v2.js"></script>
+</body>
+</html>
