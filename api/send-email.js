@@ -59,34 +59,58 @@ async function sendEmail(apiKey, { to, subject, html }) {
 // ─── Google Calendar ──────────────────────────────────────────────────────────
 async function getGoogleToken() {
   const key = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
-  if (!key) return null;
+  if (!key) { console.error('[GCal] Missing GOOGLE_SERVICE_ACCOUNT_KEY'); return null; }
 
   let sa;
-  try { sa = JSON.parse(key); } catch { return null; }
+  try { sa = JSON.parse(key); }
+  catch (e) { console.error('[GCal] Failed to parse service account key:', e.message); return null; }
 
-  const now   = Math.floor(Date.now() / 1000);
-  const claim = { iss: sa.client_email, scope: 'https://www.googleapis.com/auth/calendar', aud: 'https://oauth2.googleapis.com/token', exp: now + 3600, iat: now };
+  if (!sa.private_key || !sa.client_email) {
+    console.error('[GCal] Service account missing private_key or client_email');
+    return null;
+  }
 
-  // Build JWT (using Web Crypto API available in Vercel Edge/Node)
-  const header  = btoa(JSON.stringify({ alg: 'RS256', typ: 'JWT' })).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
-  const payload = btoa(JSON.stringify(claim)).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
-  const msg     = `${header}.${payload}`;
+  try {
+    // Use Node.js built-in crypto (available in all Vercel runtimes)
+    const { createSign } = await import('crypto');
 
-  // Sign with RSA-SHA256
-  const pemKey = sa.private_key.replace(/\\n/g, '\n');
-  const keyDer = pemToDer(pemKey);
-  const cryptoKey = await crypto.subtle.importKey('pkcs8', keyDer, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['sign']);
-  const sig = await crypto.subtle.sign('RSASSA-PKCS1-v1_5', cryptoKey, new TextEncoder().encode(msg));
-  const sigB64 = btoa(String.fromCharCode(...new Uint8Array(sig))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
-  const jwt = `${msg}.${sigB64}`;
+    const now    = Math.floor(Date.now() / 1000);
+    const claim  = {
+      iss: sa.client_email,
+      scope: 'https://www.googleapis.com/auth/calendar',
+      aud: 'https://oauth2.googleapis.com/token',
+      exp: now + 3600,
+      iat: now
+    };
 
-  const tokenResp = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`
-  });
-  const tokenData = await tokenResp.json();
-  return tokenData.access_token || null;
+    const b64url = obj => Buffer.from(JSON.stringify(obj)).toString('base64url');
+    const header  = b64url({ alg: 'RS256', typ: 'JWT' });
+    const payload = b64url(claim);
+    const msg     = `${header}.${payload}`;
+
+    const privateKey = sa.private_key.replace(/\\n/g, '\n');
+    const sign = createSign('RSA-SHA256');
+    sign.update(msg);
+    sign.end();
+    const sig = sign.sign(privateKey).toString('base64url');
+    const jwt = `${msg}.${sig}`;
+
+    const resp = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`
+    });
+    const data = await resp.json();
+    if (!data.access_token) {
+      console.error('[GCal] Token exchange failed:', JSON.stringify(data));
+      return null;
+    }
+    console.log('[GCal] Token obtained successfully');
+    return data.access_token;
+  } catch (e) {
+    console.error('[GCal] JWT signing error:', e.message);
+    return null;
+  }
 }
 
 function pemToDer(pem) {
@@ -141,13 +165,24 @@ function buildCalEvent(d) {
 
 async function addToGoogleCalendar(d) {
   const token = await getGoogleToken();
-  if (!token) return;
+  if (!token) { console.error('[GCal] No token, skipping calendar add'); return; }
+
+  const event = buildCalEvent(d);
+  if (!event) { console.error('[GCal] buildCalEvent returned null for data:', JSON.stringify({rawDate: d.rawDate, time: d.time})); return; }
+
   const calId = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID || 'maritagpsicologa@gmail.com');
-  await fetch(`https://www.googleapis.com/calendar/v3/calendars/${calId}/events?sendUpdates=none`, {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(buildCalEvent(d))
-  });
+  console.log('[GCal] Creating event:', event.summary, event.start.dateTime);
+
+  const resp = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/${calId}/events?sendUpdates=none`,
+    { method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(event) }
+  );
+  const result = await resp.json();
+  if (resp.ok) {
+    console.log('[GCal] Event created successfully. ID:', result.id);
+  } else {
+    console.error('[GCal] Failed to create event. Status:', resp.status, 'Error:', JSON.stringify(result));
+  }
 }
 
 async function updateGoogleCalendarEvent(d) {
