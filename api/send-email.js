@@ -16,13 +16,13 @@ export default async function handler(req, res) {
     const emails = buildEmails(type, data);
     const results = await Promise.all(emails.map(e => sendEmail(RESEND_KEY, e)));
 
-    // Google Calendar — errors are non-fatal, don't block email delivery
+    // Google Calendar — await so logs appear before response
     if (type === 'booking_confirm') {
-      addToGoogleCalendar(data).catch(err => console.error('GCal add error:', err.message));
+      try { await addToGoogleCalendar(data); } catch(err) { console.error('GCal add error:', err.message); }
     } else if (type === 'booking_reschedule') {
-      updateGoogleCalendarEvent(data).catch(err => console.error('GCal update error:', err.message));
+      try { await updateGoogleCalendarEvent(data); } catch(err) { console.error('GCal update error:', err.message); }
     } else if (type === 'booking_cancel') {
-      deleteGoogleCalendarEvent(data).catch(err => console.error('GCal delete error:', err.message));
+      try { await deleteGoogleCalendarEvent(data); } catch(err) { console.error('GCal delete error:', err.message); }
     }
 
     return res.status(200).json({ success: true, results });
